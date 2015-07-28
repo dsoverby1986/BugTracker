@@ -293,7 +293,6 @@
     <Content Include="Scripts\data-usa-gdp-growth.json" />
     <Content Include="Scripts\flot.jquery.json" />
     <Content Include="Content\.csslintrc" />
-    <Content Include="sidwats.config" />
     <Content Include="Content\dataTables.responsive.scss" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
@@ -608,6 +607,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\package.json" />
+    <Content Include="sidwats.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
