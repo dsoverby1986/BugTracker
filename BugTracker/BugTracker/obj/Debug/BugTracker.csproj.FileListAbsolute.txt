@@ -53,3 +53,5 @@ C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\bin\Micr
 C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\obj\Debug\BugTracker.csprojResolveAssemblyReference.cache
 C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\obj\Debug\BugTracker.dll
 C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\obj\Debug\BugTracker.pdb
+C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\bin\SendGrid.SmtpApi.dll
+C:\Users\dsoverby1986\Documents\GitHub\BugTracker\BugTracker\BugTracker\bin\SendGridMail.dll

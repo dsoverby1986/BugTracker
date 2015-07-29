@@ -1,5 +1,8 @@
 ﻿@{Layout = null;}
 @model BugTracker.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,18 +11,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
-    <link href="~/Content/Bootstrap_SB_Admin2/bootstrap.min.css" rel="stylesheet" />
+    <title>Bug Tracker - Register</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <!-- MetisMenu CSS -->
-    <link href="~/Content/Bootstrap_SB_Admin2/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
     <!-- Timeline CSS -->
-    <link href="~/Content/Bootstrap_SB_Admin2/timeline.css" rel="stylesheet" />
+    <link href="~/Content/timeline.css" rel="stylesheet" />
     <!-- Custom CSS -->
-    <link href="~/Content/Bootstrap_SB_Admin2/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
     <!-- Morris Charts CSS -->
-    <link href="~/Content/Bootstrap_SB_Admin2/morris.css" rel="stylesheet" />
+    <link href="~/Content/morris.css" rel="stylesheet" />
     <!-- Custom Fonts -->
-    <link href="~/fonts/Bootstrap_SB_Admin2/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -28,7 +31,6 @@
     <![endif]-->
 </head>
 <body>
-    <h2>@ViewBag.Title.</h2>
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
@@ -38,21 +40,21 @@
                     </div>
                     <div class="panel-body">
                         <!--<form role="form">-->
-                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "", role = "form" }))<!-- class="form-horizontal" - - - this was the class used in the forms in the solid bootstrap template-->
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "", role = "form" }))
                         {
                             @Html.AntiForgeryToken()
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                    <input class="form-control" placeholder="E-mail" name="Email" type="Email" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Display Name" name="displayName" type="text" />
+                                    <input class="form-control" placeholder="Display Name" name="DisplayName" type="text" />
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="Password" type="password" value="">
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Confirm Password" name="confirmPassword" type="password" value="" />
+                                    <input class="form-control" placeholder="Confirm Password" name="ConfirmPassword" type="password" value="" />
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
                                 <input class="btn btn-lg btn-success btn-block" type="submit" value="Register" />
@@ -68,17 +70,17 @@
     @Scripts.Render("~/bundles/bootstrap")
 
     <!-- jQuery -->
-    <script src="~/Scripts/Bootstrap_SB_Admin2/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
-    <script src="~/Scripts/Bootstrap_SB_Admin2/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="~/Scripts/Bootstrap_SB_Admin2/metisMenu.min.js"></script>
+    <script src="~/Scripts/metisMenu.min.js"></script>
     <!-- Morris Charts JavaScript -->
-    <script src="~/Scripts/Bootstrap_SB_Admin2/raphael-min.js"></script>
-    <script src="~/Scripts/Bootstrap_SB_Admin2/morris.min.js"></script>
-    <script src="~/Scripts/Bootstrap_SB_Admin2/morris-data.js"></script>
+    <script src="~/Scripts/raphael-min.js"></script>
+    <script src="~/Scripts/morris.min.js"></script>
+    <script src="~/Scripts/morris-data.js"></script>
     <!-- Custom Theme JavaScript -->
-    <script src="~/Scripts/Bootstrap_SB_Admin2/sb-admin-2.js"></script>
+    <script src="~/Scripts/sb-admin-2.js"></script>
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
