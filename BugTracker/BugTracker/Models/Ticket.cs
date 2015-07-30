@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace BugTracker.Models
 {
-    public class Tickets
+    public class Ticket
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -79,6 +79,8 @@ namespace BugTracker.Controllers
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
+                    //string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+
                     ViewBag.errorMessage = "You must have a confirmed email to log on.";
                     return View("Error");
                 }
@@ -176,7 +178,7 @@ namespace BugTracker.Controllers
 
                     TempData["ViewBagLink"] = callbackUrl;
 
-
+                    //string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
 
                     ViewBag.Message = "Check your email and confirm your account. You must be confirmed before you can log in.";
 
@@ -221,7 +223,7 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null)
+                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)));
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -527,6 +529,16 @@ namespace BugTracker.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+        /*
+        private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userID, subject, "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+            return callbackUrl;
+        }*/
+
         #endregion
     }
 }
