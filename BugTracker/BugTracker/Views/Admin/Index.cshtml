@@ -1,0 +1,83 @@
+﻿@model BugTracker.ViewModels.UserListViewModel   /*The @model indicates that this view will be rendered using a model class.
+                                                  The 'BugTacker.ViewModels.UserListViewModel' is the type of model class
+                                                  that will be used when rendering the view. The specific instance of that
+                                                  model class is specified in the 'Index' action method of the 'Admin' controller.
+                                                  The 'UserListViewModel' is instantiated as 'theViewModel' in the 'Index' action
+                                                  method in the 'Admin' controller.*/
+@section css {
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.responsive.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.alphabetSearch.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.jqueryui.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
+}
+<div class="container">
+    @foreach (var role in Model.Roles)
+    {
+        <a class="btn btn-warning manageRoles" href=@Url.Action("ManageRoles", "Admin", new { role = role.Value })>Manage @role.Value Role</a>
+    }
+</div>
+<table class="table table-bordered" id="adminUsersTable">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Role(s)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="userDisplayTable">
+        @foreach (var user in Model.Users)
+        {
+            <tr class="userRow">
+                <td>
+                    @user.DisplayName
+                </td>
+                <td>
+                    @user.Email
+                </td>
+                <td>
+                    @foreach (var role in user.Roles.ToList())
+                    {
+                    @*
+                    Each role here is like a RoleJoinModel, it has a RoleId and UserId.
+                    Since we have a dictionary key=RoleId, value=RoleName, we can access
+                    the role names by Model.Roles[roleId].
+                    *@
+                       @Model.Roles[role.RoleId]<span><br /></span>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditUserRoles", new { user.Id})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts {
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.jqueryui.min.js"></script>
+    <script src="~/Scripts/dataTables.jPaginator.js"></script>
+    <script src="~/Scripts/dataTables.foundation.min.js"></script>
+    <script src="~/Scripts/dataTables.responsive.js"></script>
+    <script src="~/Scripts/dataTables.searchHighlight.min.js"></script>
+
+    <script>
+        $(window).load(function () {
+            $('#adminUsersTable').DataTable({
+                responsive: true,
+                stateSave: true
+            });
+        })
+    </script>
+}

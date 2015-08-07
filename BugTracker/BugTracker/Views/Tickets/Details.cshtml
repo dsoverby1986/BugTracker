@@ -1,0 +1,186 @@
+﻿@model BugTracker.Models.Ticket
+@{
+    ViewBag.Title = Model.Title;
+}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Title) |
+        <span>Created: @Html.DisplayFor(model => model.Created)</span> <span>|</span>
+        @if (Model.Updated != null)
+        {
+            <span>Updated: @Html.DisplayFor(model => model.Updated)</span><span>|</span>
+        }
+        <span>Project: @Html.DisplayFor(model => model.Project.Name)</span>
+    </div>
+    <div class="panel-heading">
+        <p>Created: @Html.DisplayFor(model => model.Created)</p>
+    </div>
+    @if (Model.Updated != null)
+    {
+        <div class="panel-heading">
+            <p>Updated: @Html.DisplayFor(model => model.Updated)</p>
+        </div>
+    }
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <p>
+            @Html.DisplayFor(model => model.Description)
+        </p>
+    </div>
+    <!-- /.panel-body -->
+</div>
+
+
+@*
+
+    <div>
+        <h4>@Html.DisplayFor(model => model.Title)</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Priority
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Priority.Name)
+            </dd>
+
+            <dt>
+                Project
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Project.Name)
+            </dd>
+
+            <dt>
+                Status
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Status.Name)
+            </dd>
+
+            <dt>
+                Type
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Type.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Created)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Created)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Updated)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Updated)
+            </dd>
+
+            <dt>
+                Owner
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.OwnerUserId)
+            </dd>
+
+            <dt>
+                Assigned To
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AssignedToUserId)
+            </dd>
+
+        </dl>
+    </div>
+*@
+    <p>
+@if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+{
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <span>|</span>}
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="form-group">
+        <h4>Add Attachment</h4>
+        <div class="col-md-10">
+            <form action="@Url.Action("AddAttachment")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="TicketId" value="@Model.Id" />
+                <input name="image" type="file" class="form-control" id="fileUpload" />
+                <input type="submit" value="Submit" class="btn btn-theme" />
+            </form>
+        </div>
+    </div>
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+@if (User.Identity.IsAuthenticated)
+{
+    //using (Html.BeginForm())
+    //{
+    <div>
+        <h4>Post Comment</h4>
+        <form action="@Url.Action("CreateComment")" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="TicketId" value="@Model.Id" />
+            <textarea name="Comment" rows="5" cols="70" placeholder="Your Comment Here..." id="comment"></textarea>
+            <br />
+            <input type="submit" value="Submit" class="btn btn-theme" />
+        </form>
+        <br />
+        <h4>Comments.</h4>
+        <div class="hline"></div>
+        <br />
+    </div>
+    //}
+}
+
+@foreach (var comment in Model.Comments)
+{
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="commentContainer" style="border: ridge 5px grey">
+                <p>
+                    <csmall>By: @Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span>|</span>
+                    <csmall>Date: @Html.DisplayFor(modelItem => comment.Created)</csmall>
+                </p>
+                <div>
+                    @Html.DisplayFor(modelItem => comment.Comment)
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+}

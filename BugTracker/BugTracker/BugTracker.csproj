@@ -165,26 +165,32 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\dbExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\TicketAttachment.cs" />
     <Compile Include="Models\TicketComment.cs" />
     <Compile Include="Models\TicketHistory.cs" />
     <Compile Include="Models\TicketNotification.cs" />
     <Compile Include="Models\TicketPriority.cs" />
+    <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Models\TicketStatus.cs" />
     <Compile Include="Models\TicketType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\UserListViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Defaults_Not_In_Use\bootstrap.css" />
@@ -214,13 +220,14 @@
     <Content Include="Content\metisMenu.min.css" />
     <Content Include="Content\mocha.css" />
     <Content Include="Content\morris.css" />
+    <Content Include="Content\multi-select.css" />
     <Content Include="Content\sb-admin-2.css" />
-    <Content Include="Content\Site.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="img\switch.png" />
     <Content Include="Scripts\accent-neutralise.js" />
     <Content Include="Scripts\accepts.js" />
     <Content Include="Scripts\access.js" />
@@ -405,6 +412,11 @@
     <Content Include="Content\variables.less" />
     <Content Include="Content\vendor-prefixes.less" />
     <Content Include="Content\wells.less" />
+    <Content Include="connect.config" />
+    <None Include="Properties\PublishProfiles\dsobugtracker.pubxml" />
+    <None Include="Properties\PublishProfiles\dsoverby-bugtracker - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\dsoverby-bugtracker - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\dsoverby-bugtracker.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\deferred.js" />
@@ -495,6 +507,7 @@
     <Content Include="Scripts\jquery.flot.tooltip.source.js" />
     <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jquery.multi-select.js" />
     <Content Include="Scripts\jsonp.js" />
     <Content Include="Scripts\load.js" />
     <Content Include="Scripts\manipulation.js" />
@@ -629,10 +642,22 @@
     <Content Include="Views\Account\ResendEmailConfirmation.cshtml" />
     <Content Include="Views\Account\ConfirmationSent.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
+    <Content Include="Views\Tickets\Create.cshtml" />
+    <Content Include="Views\Tickets\Delete.cshtml" />
+    <Content Include="Views\Tickets\Details.cshtml" />
+    <Content Include="Views\Tickets\Edit.cshtml" />
+    <Content Include="Views\Tickets\Index.cshtml" />
+    <Content Include="Views\Projects\Create.cshtml" />
+    <Content Include="Views\Projects\Delete.cshtml" />
+    <Content Include="Views\Projects\Details.cshtml" />
+    <Content Include="Views\Projects\Edit.cshtml" />
+    <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\EditUserRoles.cshtml" />
+    <Content Include="Views\Admin\ManageRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,0 +1,88 @@
+﻿@model BugTracker.Models.ApplicationUser
+@{
+    ViewBag.Title = "Edit User";
+}
+
+@section css {
+    <link href="~/Content/multi-select.css" rel="stylesheet" />
+}
+<div class="row">
+    <div class="col-md-5">
+        <h2>@Model.DisplayName</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ListBox("SelectedRoles")<br />
+            <button type="submit">Submit</button>
+        }
+    </div>
+    <div class="col-md-7">
+        <h3><u>General Information</u></h3>
+        <table>
+            <tr>
+                <th class="generalInfo">
+                    Display Name
+                </th>
+                <td>
+                    @Model.DisplayName
+                </td>
+            </tr>
+            <tr>
+                <th class="generalInfo">
+                    Email
+                </th>
+                <td>
+                    @Model.Email
+                </td>
+            </tr>
+            <tr>
+                <th class="generalInfo">
+                    Projects
+                </th>
+                <td>
+                    @if(Model.Projects.Count == 0){
+                        <span>@Model.DisplayName is not currently involved with any projects.</span>
+                    }
+                    else
+                    {
+                        foreach (var project in Model.Projects)
+                        {
+                            @project.Name <br />
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th class="generalInfo">
+                    Tickets
+                </th>
+                <td>
+                    @if (Model.Tickets.Count == 0)
+                    {
+                        <span>@Model.DisplayName is not currently involved with any tickets. </span>
+                    }
+                    else
+                    {
+                        foreach (var ticket in Model.Tickets)
+                        {
+                            @ticket.Title <br />
+                        }
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.multi-select.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').multiSelect({
+                selectionHeader: "In Role",
+                selectableHeader: "Not in Role"
+            });
+        })
+    </script>
+}

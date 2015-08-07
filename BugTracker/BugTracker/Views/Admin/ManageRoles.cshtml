@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "ManageRoles";
+}
+
+@section css {
+    <link href="~/Content/multi-select.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm()) 
+{ 
+    @Html.AntiForgeryToken()
+    @Html.ListBox("AssignedUsers")<!--Creates a listbox of the using the parameters specified in the 'AssignedUsers' property of 
+                                      the 'ViewBag'.-->
+    <button type="submit">Submit</button>
+}
+
+@section scripts {
+    <script src="~/Scripts/jquery.multi-select.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').multiSelect({
+                selectionHeader: "In Role",
+                selectableHeader: "Not in Role"
+            });
+        })
+    </script>
+}

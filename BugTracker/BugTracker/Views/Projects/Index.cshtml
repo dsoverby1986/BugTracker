@@ -1,0 +1,148 @@
+﻿@model IEnumerable<BugTracker.Models.Project>/*Allows me to iterate over the collection of Projects that is being passed from the controller*/
+@{
+    ViewBag.Title = "Projects";//Viewbag.Title is a loosely typed variable with the value of "Projects"
+}
+@section css {
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.responsive.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.alphabetSearch.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.jqueryui.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer") || User.IsInRole("Submitter"))//If the current user is in the 'Admin' or
+{
+    if(User.IsInRole("Admin")){                                                                                                 //'Developer' or 'Project Manager' role
+    <p>                                                                                       <!--Do the following...-->
+        @Html.ActionLink("Create New", "Create")<!--creates a link to the 'Create' action method of the Project controller...controller 
+                                                    is not specified-->
+    </p>}
+        
+        <table class="table table-responsive table-bordered" id="projectsTable">
+            <thead>
+                <tr>
+                    <th>
+                        Project
+                    </th>
+                    <th>
+                        Created
+                    </th>
+                    <th>
+                        Updated
+                    </th>
+                    <th>
+                        Assigned To
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Created)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Updated)
+                        </td>
+                        <td>
+                            @foreach (var user in item.Users.ToList())
+                            {
+                                @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
+                            }
+                     @*       @Html.DisplayFor(modelItem => item.Users.Select(u => u.DisplayName).ToList())   *@
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
+                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+else
+{
+    <center>
+        <h3>Currently you do not have permission to view projects.</h3>
+        <h3>Contact the administrator to obtain access.</h3>
+    </center>
+}
+    @section scripts {
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.jqueryui.min.js"></script>
+    <script src="~/Scripts/dataTables.jPaginator.js"></script>
+    <script src="~/Scripts/dataTables.foundation.min.js"></script>
+    <script src="~/Scripts/dataTables.responsive.js"></script>
+    <script src="~/Scripts/dataTables.searchHighlight.min.js"></script>
+
+    <script>
+        $(window).load(function () {
+            $('#projectsTable').DataTable({
+                responsive: true,
+                stateSave: true
+            });
+        })
+    </script>
+    }
+@*
+    foreach (var item in Model)//foreach loop goes through the collection of projects...
+    {
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(modelItem => item.Name)
+        </div>
+        <div class="panel-heading">
+            <h5>Created: @Html.DisplayFor(model => item.Created)</h5>
+        </div>
+        @if (item.Updated != null)
+        {
+        <div class="panel-heading">
+            <h5>Updated: @Html.DisplayFor(model => item.Updated)</h5>
+        </div>
+        }
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <p>
+                @Html.DisplayFor(modelItem => item.Description)
+            </p>
+        </div>
+        <div class="panel-footer">
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) <span>|</span>
+            }
+            @Html.ActionLink("View Tickets", "Details", new { id=item.Id })
+            @if (User.IsInRole("Admin"))
+            {
+                <span>|</span>@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            }
+        </div>
+        <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+}*@
+
+
+@*
+    }
+    else
+    {
+        <center>
+            <h3>Currently you do not have permission to view projects.</h3>
+            <h3>Contact the administrator to obtain access.</h3>
+        </center>
+    }*@

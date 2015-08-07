@@ -14,12 +14,37 @@ namespace BugTracker.Models
         public string LastName { get; set; }
         public string DisplayName { get; set; }
 
+        public ApplicationUser()
+        {
+            this.Projects = new HashSet<Project>();
+            this.Notifications = new HashSet<TicketNotification>();
+            this.Comments = new HashSet<TicketComment>();
+            this.Attachements = new HashSet<TicketAttachment>();
+            this.Tickets = new HashSet<Ticket>();
+        }
+
+        public virtual ICollection<TicketNotification> Notifications { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; }
+        public virtual ICollection<TicketAttachment> Attachements { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
+        }
+
+        internal void Clear()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        internal void Add(string assignedUser)
+        {
+            throw new System.NotImplementedException();
         }
     }
 

@@ -1,0 +1,85 @@
+﻿@model BugTracker.Models.Project
+@{
+    ViewBag.Title = Html.DisplayFor(model => model.Name);
+}
+@section css {
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.responsive.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.alphabetSearch.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.jqueryui.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Name)
+    </div>
+    <div class="panel-heading">
+        <p>Created: @Html.DisplayFor(model => model.Created)</p>
+    </div>
+    @if (Model.Updated != null)
+    {
+        <div class="panel-heading">
+            <p>Updated: @Html.DisplayFor(model => model.Updated)</p>
+        </div>
+    }
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <p>
+            @Html.DisplayFor(model => model.Description)
+        </p>
+    </div>
+    <!-- /.panel-body -->
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        
+            <table id="ticketTable">
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>Created By</th>
+                        <th>Created On</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in Model.Tickets)
+                    {
+                        <tr>
+                            <td>@ticket.Title</td>
+                            <td>@ticket.OwnerUser.DisplayName</td>
+                            <td>@ticket.Created</td>
+                            <td><a href=@Url.Action("Details", "Tickets", new { id = ticket.Id})>Details</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+    <!-- /.panel-body -->
+</div>
+<!-- /.panel -->
+<a href="@Url.Action("Create", "Tickets", new { projectId = Model.Id })">Create Ticket</a>
+
+@section scripts {
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.jqueryui.min.js"></script>
+    <script src="~/Scripts/dataTables.jPaginator.js"></script>
+    <script src="~/Scripts/dataTables.foundation.min.js"></script>
+    <script src="~/Scripts/dataTables.responsive.js"></script>
+    <script src="~/Scripts/dataTables.searchHighlight.min.js"></script>
+
+    <script>
+        $(window).load(function () {
+            $('#ticketTable').DataTable({
+                responsive: true,
+                stateSave: true
+            });
+        })
+    </script>
+}

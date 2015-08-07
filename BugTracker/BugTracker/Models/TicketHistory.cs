@@ -14,7 +14,10 @@ namespace BugTracker.Models
         public string Property { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
-        public DateTimeOffset Changed { get; set; }
+        public System.DateTimeOffset Changed { get; set; }
         public int UserId { get; set; }
+
+        public virtual Ticket Ticket { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }
