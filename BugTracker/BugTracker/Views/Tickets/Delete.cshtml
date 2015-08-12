@@ -1,24 +1,21 @@
 ﻿@model BugTracker.Models.Ticket
-
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Delete</title>
-</head>
-<body>
-    <h3>Are you sure you want to delete this?</h3>
+           @{
+               ViewBag.Title = "Delete: " + Model.Title;
+           }
+               <!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
     <div>
-        <h4>Ticket</h4>
-        <hr />
         <dl class="dl-horizontal">
             <dt>
-                @Html.DisplayNameFor(model => model.Priority.Name)
+                Priority:
             </dt>
     
             <dd>
@@ -26,7 +23,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Project.Name)
+                Project:
             </dt>
     
             <dd>
@@ -34,7 +31,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Status.Name)
+                Status:
             </dt>
     
             <dd>
@@ -42,7 +39,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Type.Name)
+                Type:
             </dt>
     
             <dd>
@@ -50,7 +47,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Title)
+                Title:
             </dt>
     
             <dd>
@@ -58,7 +55,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Description)
+                Description:
             </dt>
     
             <dd>
@@ -66,7 +63,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Created)
+                Created:
             </dt>
     
             <dd>
@@ -74,7 +71,7 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.Updated)
+                Updated:
             </dt>
     
             <dd>
@@ -82,31 +79,33 @@
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.OwnerUserId)
+                Owner:
             </dt>
     
             <dd>
-                @Html.DisplayFor(model => model.OwnerUserId)
+                @Html.DisplayFor(model => model.OwnerUser.DisplayName)
             </dd>
     
             <dt>
-                @Html.DisplayNameFor(model => model.AssignedToUserId)
+                Assigned To:
             </dt>
     
             <dd>
-                @Html.DisplayFor(model => model.AssignedToUserId)
+                @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
             </dd>
     
         </dl>
     
         @using (Html.BeginForm()) {
             @Html.AntiForgeryToken()
-    
+    <br />
+            <br />
             <div class="form-actions no-color">
-                <input type="submit" value="Delete" class="btn btn-default" /> |
-                @Html.ActionLink("Back to List", "Index")
+                <center>
+                    <h3>Are you sure you want to delete this?</h3>
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <a href="@Url.Action("Index", "Tickets", new { })" class="btn btn-primary">Back To List</a>
+                </center>
             </div>
         }
     </div>
-</body>
-</html>

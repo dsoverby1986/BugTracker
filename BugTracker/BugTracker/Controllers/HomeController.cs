@@ -56,8 +56,10 @@ namespace BugTracker.Controllers
                 if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                 {
                     ViewBag.TicketTotal = user.Projects.Select(p => p.Tickets.Count > 0).Count();
-                    ViewBag.CommentTotal = user.Tickets.SelectMany(t => t.Comments).Count();
-                    ViewBag.AttachmentTotal = user.Tickets.SelectMany(t => t.Attachments).Count();
+                    ViewBag.CommentTotal = db.Tickets.Where(t => t.AssignedToUserId == user.Id).SelectMany(t => t.Comments).Count();
+                    //ViewBag.CommentTotal = user.Tickets.SelectMany(t => t.Comments).Count();
+                    ViewBag.AttachmentTotal = db.Tickets.Where(t => t.AssignedToUserId == user.Id).SelectMany(t => t.Attachments).Count();
+                    //ViewBag.AttachmentTotal = user.Tickets.SelectMany(t => t.Attachments).Count();
                     theViewModel = new HomePageViewModel()
                     {
                         Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),

@@ -68,6 +68,8 @@ namespace BugTracker.Models
         [Route("Projects/{projectId}/Tickets/Create")]
         public ActionResult Create(int projectId)
         {
+            var project = db.Projects.FirstOrDefault(p => p.Id == projectId);
+            ViewBag.Title = "Create A New Ticket For '" + project.Name + "'";
             ViewBag.ProjectId = projectId;
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
@@ -130,14 +132,13 @@ namespace BugTracker.Models
         {
             var editable = new List<string>() { "Title", "Description" };
             if (User.IsInRole("Admin"))
-                editable.AddRange(new string[] { "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId"});
+                editable.AddRange(new string[] { "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "Updated"});
             if (User.IsInRole("Project Manager"))
-                editable.AddRange(new string[] { "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId" });
+                editable.AddRange(new string[] { "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "Updated" });
 
             if (ModelState.IsValid)
             {
                 ticket.Updated = DateTimeOffset.Now;
-
                 var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
                 var histories = GetTicketHistories(oldTicket, ticket).Where(h => editable.Contains(h.History.Property));
 
@@ -267,7 +268,6 @@ namespace BugTracker.Models
 
             if (oldTicket.AssignedToUserId != newTicket.AssignedToUserId)
             {
-
                 histories.Add(new TicketHistoryWithNotification()
                 {
                     History = new TicketHistory()
@@ -278,33 +278,41 @@ namespace BugTracker.Models
                         OldValue = oldTicket.AssignedToUserId,
                         OldValueDisplay = oldUser != null ? oldUser.DisplayName : "Unassigned",
                         NewValue = newTicket.AssignedToUserId,
-                        NewValueDisplay = newUser != null ? newUser.DisplayName : "Unassigned"
+                        NewValueDisplay = newUser != null ? newUser.DisplayName : "Unassigned",
+                        Changed = DateTimeOffset.Now
                     },
                     Notification = newUser != null ? new IdentityMessage()
                     {
-                        Subject = "You have a new Notification",
+                        Subject = "You have been assigned to a ticket.",
                         Destination = newUser.Email,
-                        Body = "You have been assigned to a new ticket. The ticket was created in regard to the " + newTicket.Project.Name + " project. The ticket is titled '" + newTicket.Title + "'"
+                        Body = "You have been assigned to a ticket. The ticket is titled '" + newTicket.Title + "'."
                     } : null
                 });
             }
 
-            if(oldTicket.Description != newTicket.Description)
-               histories.Add(new TicketHistoryWithNotification()
-               {
-                   History = new TicketHistory()
-                   {
-                       TicketId = newTicket.Id,
-                       Property = "Description",
-                       PropertyDisplay = "Description",
-                       OldValue = oldTicket.Description,
-                       OldValueDisplay = null,
-                       NewValue = newTicket.Description,
-                       NewValueDisplay = null
-                   },
-                   Notification = null
-               });
-
+            if (oldTicket.Description != newTicket.Description)
+            {                  
+                histories.Add(new TicketHistoryWithNotification()
+                {
+                    History = new TicketHistory()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "Description",
+                        PropertyDisplay = "Description",
+                        OldValue = oldTicket.Description,
+                        OldValueDisplay = "'" + oldTicket.Description + "'",
+                        NewValue = newTicket.Description,
+                        NewValueDisplay = "'" + newTicket.Description + "'",
+                        Changed = DateTimeOffset.Now
+                    },
+                    Notification = newUser != null ? new IdentityMessage()
+                    {
+                        Subject = "The description of your ticket, " + newTicket.Title + ", has changed.",
+                        Destination = newUser.Email,
+                        Body = "The descripton for your ticket, " + newTicket.Title + ", has changed. The new description is as follows: <br /><br /><br />" + newTicket.Description
+                    } : null
+                });
+            }
             if (oldTicket.TicketTypeId != newTicket.TicketTypeId)
             {
                 var oldDisplay = oldTicket.Type != null ? oldTicket.Type.Name : "No Type";
@@ -321,7 +329,8 @@ namespace BugTracker.Models
                             OldValue = oldTicket.TicketTypeId.ToString(),
                             OldValueDisplay = oldDisplay,
                             NewValue = newTicket.TicketTypeId.ToString(),
-                            NewValueDisplay = newDisplay
+                            NewValueDisplay = newDisplay,
+                            Changed = DateTimeOffset.Now
                         },
                         Notification = null
                     });
@@ -342,7 +351,8 @@ namespace BugTracker.Models
                         OldValue = oldTicket.TicketStatusId.ToString(),
                         OldValueDisplay = oldDisplay,
                         NewValue = newTicket.TicketStatusId.ToString(),
-                        NewValueDisplay = newDisplay
+                        NewValueDisplay = newDisplay,
+                        Changed = DateTimeOffset.Now
                     },
                     Notification = null
                 });

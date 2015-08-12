@@ -15,13 +15,19 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Title) <span class="separator-o">|</span>
-        <span>Created: @Html.DisplayFor(model => model.Created)</span> <span class="separator-o">|</span>
+        <span><b>Created: </b>@Html.DisplayFor(model => model.Created)</span> <span class="separator-o">|</span>
         @if (Model.Updated != null)
         {
-            <span>Updated: @Html.DisplayFor(model => model.Updated)</span><span class="separator-o">|</span>
+            <span><b>Updated: </b>@Html.DisplayFor(model => model.Updated)</span><span class="separator-o"> |</span>
         }
-        <span>Project: @Html.DisplayFor(model => model.Project.Name)</span>
+        <span><b>Project: </b>@Html.DisplayFor(model => model.Project.Name)</span>
     </div>
+    @if (Model.AssignedToUserId != null)
+    {
+        <div class="panel-heading">
+            <p>This ticket has been assigned to @Html.DisplayFor(model => model.AssignedToUser.DisplayName).</p>
+        </div>
+    }
     <!-- /.panel-heading -->
     <div class="panel-body">
         <p>
@@ -30,187 +36,126 @@
     </div>
     <!-- /.panel-body -->
 </div>
-
-
-@*
-
-    <div>
-        <h4>@Html.DisplayFor(model => model.Title)</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                Priority
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Priority.Name)
-            </dd>
-
-            <dt>
-                Project
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Project.Name)
-            </dd>
-
-            <dt>
-                Status
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Status.Name)
-            </dd>
-
-            <dt>
-                Type
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Type.Name)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Created)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Created)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Updated)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Updated)
-            </dd>
-
-            <dt>
-                Owner
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.OwnerUserId)
-            </dd>
-
-            <dt>
-                Assigned To
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.AssignedToUserId)
-            </dd>
-
-        </dl>
-    </div>
-*@
     <p>
 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
 {
         @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <span class="separator-r">|</span>}
         @Html.ActionLink("Back to List", "Index")
     </p>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <div class="panel panel-default">
-        <div class="form-group">
+<div class="row">
+    <div class="col-xs-6">
+        @if (User.Identity.IsAuthenticated)
+        {
+            //using (Html.BeginForm())
+            //{
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Post Comment</h4>
+                </div>
+                <form action="@Url.Action("CreateComment")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TicketId" value="@Model.Id" />
+                    <textarea name="Comment" rows="5" style="width:100%; margin-bottom:0px;" placeholder="Your Comment Here..." id="comment"></textarea>
+                    <br />
+                    <input type="submit" value="Submit" class="btn btn-theme btn-block" style="margin-top:-6px;" />
+                </form>
+            </div>
+            //}
+        }
+        @if (Model.Comments.Count > 0)
+        {
+            <h4><u>Comments</u></h4>
+            foreach (var comment in Model.Comments)
+            {
+                <div class="row">
+                    <div class="col-sm-12 panel-default">
+                        <div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px;">
+                            <p>
+                                <csmall><b>By: </b>@Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span class="separator-o"> |</span>
+                                <csmall><b>Date: </b> @Html.DisplayFor(modelItem => comment.Created)</csmall>
+                            </p>
+                            <div>
+                                @Html.DisplayFor(modelItem => comment.Comment)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            }
+        }
+    </div>
+    <div class="col-xs-6">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>Add Attachment</h4>
             </div>
-            <div class="panel-body">
-                <div class="col-md-10">
-                    <form action="@Url.Action("AddAttachment")" method="post" enctype="multipart/form-data">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="TicketId" value="@Model.Id" />
-                        <input name="file" type="file" class="form-control" id="fileUpload" />
-                        <p>Attachment Description</p><input type="text" name="Description" id="Description" size="100" />
-                        <input type="submit" value="Submit" class="btn btn-theme" />
-                    </form>
+            <form action="@Url.Action("AddAttachment")" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="TicketId" value="@Model.Id" />
+                <div id="steve">
+                    <input name="file" type="file" class="" id="fileUpload" style="width:100%;"/>
+                    <textarea type="text" name="Description" id="Description" rows="4" placeholder="Attachment Description" style="width:100%; margin-bottom:0px; margin-top:-1px;"></textarea>
+                    <input type="submit" value="Submit" class="btn btn-theme btn-block" style="margin-top:-6px;" />
+                </div>
+            </form>
+        </div>
+    }
+    @if (Model.Attachments.Count > 0)
+    {
+        <h4><u>Attachments</u></h4>
+        foreach (var attachment in Model.Attachments)
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px;">
+                        <p><b>Added On: </b>@attachment.Created</p>
+                        <p><b>Added By: </b>@attachment.User.DisplayName</p>
+                        <p><b>Description: </b>@attachment.Description</p>
+                        <p><img class="img-responsive attachment" src="@attachment.FileUrl" alt="" style="width:100%; margin-bottom:-10px;" /></p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-}
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<h4><u>Attachments</u></h4>
-<br />
-@foreach (var attachment in Model.Attachments)
-{
-    <p><b>Added On: </b>@attachment.Created</p>
-    <p><b>Added By: </b>@attachment.User.DisplayName</p>
-    <p><b>Description: </b>@attachment.Description</p>
-    <p><img class="img-responsive attachment" src="@attachment.FileUrl" alt="" /></p>
-}
-<br />
-<br />
-<br />
-<br />
-<br />
-@if (User.Identity.IsAuthenticated)
-{
-    //using (Html.BeginForm())
-    //{
-    <div>
-        <h4>Post Comment</h4>
-        <form action="@Url.Action("CreateComment")" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="TicketId" value="@Model.Id" />
-            <textarea name="Comment" rows="5" cols="70" placeholder="Your Comment Here..." id="comment"></textarea>
             <br />
-            <input type="submit" value="Submit" class="btn btn-theme" />
-        </form>
-        <br />
-        <h4><u>Comments</u></h4>
-        <div class="hline"></div>
-        <br />
+        }
+    }
     </div>
-    //}
-}
+</div>
 
-@foreach (var comment in Model.Comments)
-{
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="commentContainer" style="border: ridge 5px grey">
-                <p>
-                    <csmall>By: @Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span class="separator-o"> |</span>
-                    <csmall>Date: @Html.DisplayFor(modelItem => comment.Created)</csmall>
-                </p>
-                <div>
-                    @Html.DisplayFor(modelItem => comment.Comment)
-                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br />
+<br />
+@if (Model.Histories.Count > 0) { 
+    <h4><u>Edit History For This Ticket</u></h4>
+    foreach (var history in Model.Histories)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                The @history.PropertyDisplay was changed from @(history.OldValueDisplay ?? "unset") to @(history.NewValueDisplay ?? "unset"), on @history.Changed
             </div>
         </div>
-    </div>
+    }
     <br />
-}
-
-@foreach(var history in Model.Histories)
-{
-    <div>
-        @history.Property was changed from @(history.OldValueDisplay ?? "unset") to @(history.NewValueDisplay ?? "unset")
-    </div>
+    <br />
 }

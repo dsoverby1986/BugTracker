@@ -109,5 +109,13 @@ namespace BugTracker.Controllers
 
             return View(user);
         }
+
+        //POST
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUserRoles(string id, string[] roles)
+        {
+            return
+        }*/
     }
 }

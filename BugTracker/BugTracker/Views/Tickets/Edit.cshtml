@@ -1,21 +1,29 @@
 ﻿@model BugTracker.Models.Ticket
 @{
-    ViewBag.Title = "Edit Ticket";
+    ViewBag.Title = "Edit Ticket: " + Model.Title;
 }
+    <!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
         
         <div class="form-horizontal">
-            <h4>Ticket</h4>
-            <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.Id)
     
             <div class="form-group">
                 @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @readonly = "" } })
                     @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -28,7 +36,7 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.TicketTypeId, "TicketTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.TicketTypeId, "Ticket Type", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.TicketTypeId, "", new { @class = "text-danger" })
@@ -36,7 +44,7 @@
             </div>
     
             <div class="form-group">
-                @Html.LabelFor(model => model.TicketPriorityId, "TicketPriorityId", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.TicketPriorityId, "Ticket Priority", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.TicketPriorityId, "", new { @class = "text-danger" })
@@ -44,7 +52,7 @@
             </div>
     
             <div class="form-group">
-                @Html.LabelFor(model => model.TicketStatusId, "TicketStatusId", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.TicketStatusId, "Ticket Status", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownList("TicketStatusId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.TicketStatusId, "", new { @class = "text-danger" })
@@ -54,7 +62,7 @@
             @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
             {
                 <div class="form-group">
-                    @Html.LabelFor(model => model.AssignedToUserId, "AssignedToUserId", htmlAttributes: new { @class = "col-label col-md-2" })
+                    @Html.LabelFor(model => model.AssignedToUserId, "Assigned User", htmlAttributes: new { @class = "col-label col-md-2" })
                     <div class="col-md-10">
                         @Html.DropDownList("AssignedToUserId", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.AssignedToUserId, "", new { @class = "text-danger" })
@@ -64,16 +72,13 @@
     
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" value="Save" class="btn btn-warning" />
+                    <a href="@Url.Action("Index", "Tickets", new { })" class="btn btn-primary">Back To List</a>
+                    <a href="@Url.Action("Details", "Tickets", new { id = Model.Id })" class="btn btn-primary">Back To '@Model.Title'</a>
                 </div>
             </div>
         </div>
     }
-    
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
-
 
 
 
