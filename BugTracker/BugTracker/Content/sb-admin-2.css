@@ -367,3 +367,16 @@ table.dataTable thead .sorting:after {
 .generalInfo {
     padding: 5px 5px 5px 5px;
 }
+
+.separator-o {
+     color: #f0ad4e;
+}
+
+.separator-r {
+    color: #d9534f;
+}
+
+.attachment {
+    max-height: 400px;
+    max-width: 800px;
+}

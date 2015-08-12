@@ -15,66 +15,93 @@
 
 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer") || User.IsInRole("Submitter"))//If the current user is in the 'Admin' or
 {
-    if(User.IsInRole("Admin")){                                                                                                 //'Developer' or 'Project Manager' role
+        <!------------------------------------------------------------------------------------------------------>
+    <div class="row">
+        <!-------------------------------------------------------------------------------------------------------->
+        <div class="col-lg-12">
+            <!---------------------------------------------------------------------------------------------->
+            <h3>@ViewBag.Title</h3>
+            <div class="page-header"></div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    if (User.IsInRole("Admin"))
+    {                                                                                                 //'Developer' or 'Project Manager' role
     <p>                                                                                       <!--Do the following...-->
         @Html.ActionLink("Create New", "Create")<!--creates a link to the 'Create' action method of the Project controller...controller 
                                                     is not specified-->
     </p>}
-        
-        <table class="table table-responsive table-bordered" id="projectsTable">
-            <thead>
-                <tr>
-                    <th>
-                        Project
-                    </th>
-                    <th>
-                        Created
-                    </th>
-                    <th>
-                        Updated
-                    </th>
-                    <th>
-                        Assigned To
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Created)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Updated)
-                        </td>
-                        <td>
-                            @foreach (var user in item.Users.ToList())
-                            {
-                                @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
-                            }
-                     @*       @Html.DisplayFor(modelItem => item.Users.Select(u => u.DisplayName).ToList())   *@
-                        </td>
-                        <td>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
-                            @Html.ActionLink("Details", "Details", new { id = item.Id })
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-table fa-fw"></i> Projects
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive col-xs-12">
+                        <table class="table table-bordered table-hover table-striped" id="projectsTable">
+                            <thead>
+                                <tr>
+                                    <th>Project</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
+                                    <th>Assigned To</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Created)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Updated)
+                                        </td>
+                                        <td>
+                                            @foreach (var user in item.Users.ToList())
+                                            {
+                                                @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
+                                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 else
 {
+        <!------------------------------------------------------------------------------------------------------>
+    <div class="row">
+        <!-------------------------------------------------------------------------------------------------------->
+        <div class="col-lg-12">
+            <!---------------------------------------------------------------------------------------------->
+            <h3>@ViewBag.Title</h3>
+            <div class="page-header"></div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+            <!-- /.row -->
     <center>
         <h3>Currently you do not have permission to view projects.</h3>
         <h3>Contact the administrator to obtain access.</h3>

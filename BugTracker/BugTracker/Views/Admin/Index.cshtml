@@ -14,55 +14,81 @@
     <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
     <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
 }
-<div class="container">
+    <!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="panel">
     @foreach (var role in Model.Roles)
     {
         <a class="btn btn-warning manageRoles" href=@Url.Action("ManageRoles", "Admin", new { role = role.Value })>Manage @role.Value Role</a>
     }
 </div>
-<table class="table table-bordered" id="adminUsersTable">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Role(s)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="userDisplayTable">
-        @foreach (var user in Model.Users)
-        {
-            <tr class="userRow">
-                <td>
-                    @user.DisplayName
-                </td>
-                <td>
-                    @user.Email
-                </td>
-                <td>
-                    @foreach (var role in user.Roles.ToList())
-                    {
-                    @*
-                    Each role here is like a RoleJoinModel, it has a RoleId and UserId.
-                    Since we have a dictionary key=RoleId, value=RoleName, we can access
-                    the role names by Model.Roles[roleId].
-                    *@
-                       @Model.Roles[role.RoleId]<span><br /></span>
-                    }
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "EditUserRoles", new { user.Id})
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-table fa-fw"></i> Tickets
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive col-xs-12">
+                    <table class="table table-bordered table-hover table-striped" id="adminUsersTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Role(s)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="userDisplayTable">
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr class="userRow">
+                                    <td>
+                                        @user.DisplayName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                    <td>
+                                        @foreach (var role in user.Roles.ToList())
+                                        {
+                                            @*
+                                                Each role here is like a RoleJoinModel, it has a RoleId and UserId.
+                                                Since we have a dictionary key=RoleId, value=RoleName, we can access
+                                                the role names by Model.Roles[roleId].
+                                            *@
+                                            @Model.Roles[role.RoleId]<span><br /></span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "EditUserRoles", new { user.Id })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div id="morris-bar-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script src="~/Scripts/jquery.dataTables.min.js"></script>
     <script src="~/Scripts/dataTables.bootstrap.min.js"></script>

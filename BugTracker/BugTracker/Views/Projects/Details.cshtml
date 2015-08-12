@@ -1,6 +1,6 @@
 ﻿@model BugTracker.Models.Project
 @{
-    ViewBag.Title = Html.DisplayFor(model => model.Name);
+    ViewBag.Title = Model.Name;
 }
 @section css {
     <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
@@ -12,11 +12,41 @@
     <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
     <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
 }
-
+    <!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Name)
+        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Name)<span class="separator-o"> |</span>
+        Created: @Html.DisplayFor(model => model.Created)
+    @if (Model.Updated != null)
+    {
+        <span class="separator-o">| </span><span>Updated:</span> @Html.DisplayFor(model => model.Updated)
+    }
     </div>
+    <div class="panel-heading">
+        <i class="fa fa-group fa-fw"></i>
+        <span>Members: </span>@{
+            var users = Model.Users.ToArray();
+                              for (int i = 0; i < users.Length; i++)
+			{
+			 if(i == users.Length-1){
+                 @users[i].DisplayName<span></span>
+             }
+             else{
+                 @users[i].DisplayName<span>, </span>
+             }
+			}
+}
+    </div>
+    @*
     <div class="panel-heading">
         <p>Created: @Html.DisplayFor(model => model.Created)</p>
     </div>
@@ -25,7 +55,7 @@
         <div class="panel-heading">
             <p>Updated: @Html.DisplayFor(model => model.Updated)</p>
         </div>
-    }
+    }*@
     <!-- /.panel-heading -->
     <div class="panel-body">
         <p>
@@ -36,34 +66,43 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-body">
-        
-            <table id="ticketTable">
-                <thead>
-                    <tr>
-                        <th>Ticket</th>
-                        <th>Created By</th>
-                        <th>Created On</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ticket in Model.Tickets)
-                    {
-                        <tr>
-                            <td>@ticket.Title</td>
-                            <td>@ticket.OwnerUser.DisplayName</td>
-                            <td>@ticket.Created</td>
-                            <td><a href=@Url.Action("Details", "Tickets", new { id = ticket.Id})>Details</a></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="panel-heading">
+        <i class="fa fa-table fa-fw"></i> Tickets
     </div>
-    <!-- /.panel-body -->
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive col-xs-12">
+                    <table class="table table-bordered table-hover table-striped" id="pdTicketTable">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Created By</th>
+                                <th>Created On</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in Model.Tickets)
+                            {
+                                <tr>
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.OwnerUser.DisplayName</td>
+                                    <td>@ticket.Created</td>
+                                    <td><a href=@Url.Action("Details", "Tickets", new { id = ticket.Id})>Details</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div id="morris-bar-chart"></div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /.panel -->
-<a href="@Url.Action("Create", "Tickets", new { projectId = Model.Id })">Create Ticket</a>
+<a href="@Url.Action("Create", "Tickets", new { projectId = Model.Id })" class="btn btn-default">Create Ticket</a>
 
 @section scripts {
     <script src="~/Scripts/jquery.dataTables.min.js"></script>
@@ -76,7 +115,7 @@
 
     <script>
         $(window).load(function () {
-            $('#ticketTable').DataTable({
+            $('#pdTicketTable').DataTable({
                 responsive: true,
                 stateSave: true
             });

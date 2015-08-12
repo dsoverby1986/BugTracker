@@ -2,25 +2,26 @@
 @{
     ViewBag.Title = Model.Title;
 }
+    <!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Title) |
-        <span>Created: @Html.DisplayFor(model => model.Created)</span> <span>|</span>
+        <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Title) <span class="separator-o">|</span>
+        <span>Created: @Html.DisplayFor(model => model.Created)</span> <span class="separator-o">|</span>
         @if (Model.Updated != null)
         {
-            <span>Updated: @Html.DisplayFor(model => model.Updated)</span><span>|</span>
+            <span>Updated: @Html.DisplayFor(model => model.Updated)</span><span class="separator-o">|</span>
         }
         <span>Project: @Html.DisplayFor(model => model.Project.Name)</span>
     </div>
-    <div class="panel-heading">
-        <p>Created: @Html.DisplayFor(model => model.Created)</p>
-    </div>
-    @if (Model.Updated != null)
-    {
-        <div class="panel-heading">
-            <p>Updated: @Html.DisplayFor(model => model.Updated)</p>
-        </div>
-    }
     <!-- /.panel-heading -->
     <div class="panel-body">
         <p>
@@ -123,23 +124,45 @@
     <p>
 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
 {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <span>|</span>}
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <span class="separator-r">|</span>}
         @Html.ActionLink("Back to List", "Index")
     </p>
 
 @if (User.Identity.IsAuthenticated)
 {
-    <div class="form-group">
-        <h4>Add Attachment</h4>
-        <div class="col-md-10">
-            <form action="@Url.Action("AddAttachment")" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="TicketId" value="@Model.Id" />
-                <input name="image" type="file" class="form-control" id="fileUpload" />
-                <input type="submit" value="Submit" class="btn btn-theme" />
-            </form>
+    <div class="panel panel-default">
+        <div class="form-group">
+            <div class="panel-heading">
+                <h4>Add Attachment</h4>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-10">
+                    <form action="@Url.Action("AddAttachment")" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="TicketId" value="@Model.Id" />
+                        <input name="file" type="file" class="form-control" id="fileUpload" />
+                        <p>Attachment Description</p><input type="text" name="Description" id="Description" size="100" />
+                        <input type="submit" value="Submit" class="btn btn-theme" />
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h4><u>Attachments</u></h4>
+<br />
+@foreach (var attachment in Model.Attachments)
+{
+    <p><b>Added On: </b>@attachment.Created</p>
+    <p><b>Added By: </b>@attachment.User.DisplayName</p>
+    <p><b>Description: </b>@attachment.Description</p>
+    <p><img class="img-responsive attachment" src="@attachment.FileUrl" alt="" /></p>
 }
 <br />
 <br />
@@ -160,7 +183,7 @@
             <input type="submit" value="Submit" class="btn btn-theme" />
         </form>
         <br />
-        <h4>Comments.</h4>
+        <h4><u>Comments</u></h4>
         <div class="hline"></div>
         <br />
     </div>
@@ -173,7 +196,7 @@
         <div class="col-sm-8">
             <div class="commentContainer" style="border: ridge 5px grey">
                 <p>
-                    <csmall>By: @Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span>|</span>
+                    <csmall>By: @Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span class="separator-o"> |</span>
                     <csmall>Date: @Html.DisplayFor(modelItem => comment.Created)</csmall>
                 </p>
                 <div>
@@ -183,4 +206,11 @@
         </div>
     </div>
     <br />
+}
+
+@foreach(var history in Model.Histories)
+{
+    <div>
+        @history.Property was changed from @(history.OldValueDisplay ?? "unset") to @(history.NewValueDisplay ?? "unset")
+    </div>
 }

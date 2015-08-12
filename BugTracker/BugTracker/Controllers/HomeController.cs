@@ -1,17 +1,114 @@
-﻿using System;
+﻿using BugTracker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using BugTracker.ViewModels;
+using System.Configuration;
 
 namespace BugTracker.Controllers
 {
     [RequireHttps]
     public class HomeController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
         public ActionResult Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated) { 
+
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                var projectList = from project in db.Projects select project;
+
+                var theViewModel = new HomePageViewModel();
+
+                /*
+                if (User.IsInRole("Admin"))
+                {
+                    ViewBag.TicketTotal = db.Tickets.Count();
+                }
+                else if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                {
+                    ViewBag.TicketTotal = user.Projects.SelectMany(p => p.Tickets).Count();
+                }
+                else if (User.IsInRole("Submitter"))
+                {
+                    ViewBag.TicketTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Count();
+                }
+                */
+                ViewBag.DisplayName = "Welcome, " + user.DisplayName;
+                ViewBag.ProjectTotal = user.Projects.Count();
+                
+                if (User.IsInRole("Admin"))
+                {
+                    ViewBag.TicketTotal = db.Tickets.Count();
+                    ViewBag.CommentTotal = db.TicketComments.Count();
+                    ViewBag.AttachmentTotal = db.TicketAttachments.Count();
+                    theViewModel = new HomePageViewModel()
+                    {
+                        Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
+                        Tickets = db.Tickets.ToList()
+                    };
+                }
+                if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                {
+                    ViewBag.TicketTotal = user.Projects.Select(p => p.Tickets.Count > 0).Count();
+                    ViewBag.CommentTotal = user.Tickets.SelectMany(t => t.Comments).Count();
+                    ViewBag.AttachmentTotal = user.Tickets.SelectMany(t => t.Attachments).Count();
+                    theViewModel = new HomePageViewModel()
+                    {
+                        Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
+                        Tickets = user.Projects.SelectMany(p => p.Tickets).ToList()
+                    };
+                }
+                if (User.IsInRole("Submitter"))
+                {
+                    ViewBag.TicketTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Count();
+                    ViewBag.CommentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Select(t => t.Comments).Count();
+                    ViewBag.AttachmentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Select(t => t.Attachments).Count();
+                    theViewModel = new HomePageViewModel()
+                    {
+                        Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
+                        Tickets = db.Tickets.Where(t => t.OwnerUserId == user.Id).ToList()
+                    };
+                }
+
+                return View(theViewModel);
+            }
+            else
+            {
+                ViewBag.DisplayName = "Welcome";
+                ViewBag.ProjectTotal = 0;
+
+                return View();
+            }
+            //NEED TO WORK OUT HOW TO GET THIS VIEW MODEL TO WORK FOR THE HOME PAGE
+            /*if (User.IsInRole("Admin")) 
+            { 
+                
+            }
+            else if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            {
+                
+            }
+            else if(User.IsInRole("Submitter"))
+            {
+                
+            }*/
+            /*else
+            {
+                theViewModel = new HomePageViewModel()
+                {
+                    Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
+                    Tickets = new List<Ticket>()
+                };
+            }*/
+            //ViewBag.CommentTotal = user.Tickets.Where(t => t.OwnerUserId == user.Id).Select(t => t.Comments).Count();
+
+            
         }
 
         public ActionResult About()
@@ -27,6 +124,36 @@ namespace BugTracker.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Contact(ContactMessage form)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(form);
+            }
+
+            var emailer = new EmailService();
+
+            var mail = new IdentityMessage()
+            {
+                Destination = ConfigurationManager.AppSettings["PersonalEmail"],
+                Subject = form.Subject,
+                Body = "You have received a new contact form submission from" + form.Name + "(" + form.FromEmail + ") with the following contents:<br /><br /><br />" + form.Message
+            };
+
+            emailer.SendAsync(mail);
+
+            //TempData["MessageSent"] = "Your message has been delivered successfully.";
+            ViewBag.Messagesent = "Your message has been delivered successfully.";
+            return View();
+            //return RedirectToAction("Contact");
+
+            /* ViewBag.Message = "Contact Shane Overby";
+
+             return View();*/
         }
     }
 }

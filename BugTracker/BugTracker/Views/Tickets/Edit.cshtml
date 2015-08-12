@@ -54,10 +54,10 @@
             @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
             {
                 <div class="form-group">
-                    @Html.LabelFor(model => model.AssignedToUser, "AssignedUser", htmlAttributes: new { @class = "col-label col-md-2" })
+                    @Html.LabelFor(model => model.AssignedToUserId, "AssignedToUserId", htmlAttributes: new { @class = "col-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownList("AssignedUser", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.AssignedToUser, "", new { @class = "text-danger" })
+                        @Html.DropDownList("AssignedToUserId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AssignedToUserId, "", new { @class = "text-danger" })
                     </div>
                 </div>
             }

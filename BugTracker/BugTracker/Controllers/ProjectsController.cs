@@ -19,14 +19,21 @@ namespace BugTracker.Models
         public ActionResult Index()//in my current code in the route.config file the landing page is the projects index page...this method
         //is used to generate that page
         {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            var projectList = from project in db.Projects select project;//the variable 'projectList' is a list of all of the projects in the database
-            //'from' declares an iteration variable called 'str' which will traverse the input collection like in a foreach loop.
-            //This query returns a list of projects complete with all of their properties, like pulling all of the rows out of the 'Projects'
-            //table one by one and putting them in a bag.  'projectList' is a collection of all of the projects from the 'Projects' table.
+            if (User.Identity.IsAuthenticated)
+            { 
+                var user = db.Users.Find(User.Identity.GetUserId());
+                var projectList = from project in db.Projects select project;//the variable 'projectList' is a list of all of the projects in the database
+                //'from' declares an iteration variable called 'str' which will traverse the input collection like in a foreach loop.
+                //This query returns a list of projects complete with all of their properties, like pulling all of the rows out of the 'Projects'
+                //table one by one and putting them in a bag.  'projectList' is a collection of all of the projects from the 'Projects' table.
             
-            return View(projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList());//the method returns the Index.cshtml view with the collection of
-            //projects sorted in descending order...sorting by the Created property 
+                return View(projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList());//the method returns the Index.cshtml view with the collection of
+                //projects sorted in descending order...sorting by the Created property 
+            }
+            else
+            {
+                return View();
+            }
         }
 
         // GET: Projects/Details/5
