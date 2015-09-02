@@ -603,7 +603,9 @@
     <Content Include="Scripts\xhr.js" />
     <Content Include="Scripts\_evalUrl.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -658,6 +660,12 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\EditUserRoles.cshtml" />
     <Content Include="Views\Admin\ManageRoles.cshtml" />
+    <Content Include="Views\Tickets\AllTickets.cshtml" />
+    <Content Include="Views\Tickets\TicketsYouAreAssignedTo.cshtml" />
+    <Content Include="Views\Tickets\TicketsYouHaveCreated.cshtml" />
+    <Content Include="Views\Shared\YouNeedToLogin.cshtml" />
+    <Content Include="Views\Tickets\UnassignedTickets.cshtml" />
+    <Content Include="Views\Tickets\UserNotifications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -20,7 +20,9 @@ namespace BugTracker.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         public System.DateTimeOffset Created { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         public Nullable<System.DateTimeOffset> Updated { get; set; }
         public int ProjectId { get; set; }
         public int TicketTypeId { get; set; }

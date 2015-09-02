@@ -41,12 +41,16 @@ namespace BugTracker.Controllers
                 */
                 ViewBag.DisplayName = "Welcome, " + user.DisplayName;
                 ViewBag.ProjectTotal = user.Projects.Count();
+                ViewBag.NotificationTotal = user.Notifications.Count();
+                ViewBag.UnassignedTickets = db.Tickets.Where(t => t.AssignedToUser == null).Count();
                 
                 if (User.IsInRole("Admin"))
                 {
+                    
                     ViewBag.TicketTotal = db.Tickets.Count();
                     ViewBag.CommentTotal = db.TicketComments.Count();
                     ViewBag.AttachmentTotal = db.TicketAttachments.Count();
+                    //ViewBag.NotificationTotal = db.TicketNotifications.Where(n => n.UserId == user.Id).Count();
                     theViewModel = new HomePageViewModel()
                     {
                         Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
@@ -55,11 +59,10 @@ namespace BugTracker.Controllers
                 }
                 if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                 {
-                    ViewBag.TicketTotal = user.Projects.Select(p => p.Tickets.Count > 0).Count();
-                    ViewBag.CommentTotal = db.Tickets.Where(t => t.AssignedToUserId == user.Id).SelectMany(t => t.Comments).Count();
-                    //ViewBag.CommentTotal = user.Tickets.SelectMany(t => t.Comments).Count();
-                    ViewBag.AttachmentTotal = db.Tickets.Where(t => t.AssignedToUserId == user.Id).SelectMany(t => t.Attachments).Count();
-                    //ViewBag.AttachmentTotal = user.Tickets.SelectMany(t => t.Attachments).Count();
+                    ViewBag.TicketTotal = user.Projects.Where(p => p.Tickets.Count > 0).SelectMany(p => p.Tickets).Count();
+                    ViewBag.CommentTotal = user.Projects.Where(p => p.Tickets.Count > 0).SelectMany(p => p.Tickets).SelectMany(p => p.Comments).Count();
+                    ViewBag.AttachmentTotal = user.Projects.Where(p => p.Tickets.Count > 0).SelectMany(p => p.Tickets).SelectMany(p => p.Attachments).Count();
+                    
                     theViewModel = new HomePageViewModel()
                     {
                         Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
@@ -69,8 +72,8 @@ namespace BugTracker.Controllers
                 if (User.IsInRole("Submitter"))
                 {
                     ViewBag.TicketTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Count();
-                    ViewBag.CommentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Select(t => t.Comments).Count();
-                    ViewBag.AttachmentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).Select(t => t.Attachments).Count();
+                    ViewBag.CommentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).SelectMany(t => t.Comments).Count();
+                    ViewBag.AttachmentTotal = db.Tickets.Where(t => t.OwnerUserId == user.Id).SelectMany(t => t.Attachments).Count();
                     theViewModel = new HomePageViewModel()
                     {
                         Projects = projectList.Where(p => p.Users.Any(u => u.Id == user.Id)).OrderByDescending(p => p.Created).ToList(),
@@ -120,10 +123,9 @@ namespace BugTracker.Controllers
             return View();
         }
 
-        [Authorize]
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Contact Administrator";
 
             return View();
         }
@@ -156,6 +158,11 @@ namespace BugTracker.Controllers
             /* ViewBag.Message = "Contact Shane Overby";
 
              return View();*/
+        }
+
+        public ActionResult YouNeedToLogin()
+        {
+            return View();
         }
     }
 }

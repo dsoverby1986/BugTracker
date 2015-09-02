@@ -1,66 +1,133 @@
 ﻿@{
     ViewBag.Title = "Contact Administrator";
-}
-        <!------------------------------------------------------------------------------------------------------>
-<div class="row">
-    <!-------------------------------------------------------------------------------------------------------->
-    <div class="col-lg-12">
-        <!---------------------------------------------------------------------------------------------->
-        <h3>@ViewBag.Title</h3>
-        <div class="page-header"></div>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- *****************************************************************************************************************
- CONTACT WRAP
- ***************************************************************************************************************** -->
-<div id="contactwrap">
-
+    Layout = null;
+}<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Contact Admin</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- MetisMenu CSS -->
+    <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
+    <!-- Timeline CSS -->
+    <link href="~/Content/timeline.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link href="~/Content/morris.css" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
     <!-- *****************************************************************************************************************
-     CONTACT FORMS
+     CONTACT WRAP
      ***************************************************************************************************************** -->
-    <div class="container mtb">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="hline"></div>
-                <p>@ViewBag.Messagesent</p>
-                <form action="@Url.Action("Contact", "Home")" method="post" role="form">
-                    @Html.AntiForgeryToken()
-                    <div class="form-group">
-                        <label for="Name">Your Name</label>
-                        <input type="text" class="form-control" id="name" name="Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="FromEmail">Email address</label>
-                        <input type="email" class="form-control" id="fromEmail" name="FromEmail">
-                    </div>
-                    <div class="form-group">
-                        <label for="Subject">Subject</label>
-                        <input type="text" class="form-control" id="subject" name="Subject">
-                    </div>
-                    <div class="form-group">
-                        <label for="Message">Message</label>
-                        <textarea class="form-control" id="message" rows="3" name="Message"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-            <br />
-            <br />
-            <br />
-            <br />
-                <p>
-                    Mocksville, NC 27028<br />
-                    United States<br />
-                </p>
-            </div><! --/col-lg-8 -->
+    <div id="contactwrap">
 
-            <div class="col-lg-4">
-                <h4>New Users</h4>
-                <div class="hline"></div>
-                <p>
-                    If you are a new user to this site, please, contact the administrtor to receive your permissions. You will receive confirmation within an hour. Thank you.
-                </p>
-            </div>
-        </div><! --/row -->
-    </div><! --/container -->
+        <!-- *****************************************************************************************************************
+         CONTACT FORMS
+         ***************************************************************************************************************** -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="login-panel panel panel-default" id="contactAdmin">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Contact Administrator</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>@ViewBag.Messagesent</p>
+                            <form action="@Url.Action("Contact", "Home")" method="post" role="form">
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    <label for="Name">Your Name</label>
+                                    <input type="text" class="form-control" id="name" name="Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="FromEmail">Email address</label>
+                                    <input type="email" class="form-control" id="fromEmail" name="FromEmail">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Subject">Subject</label>
+                                    <input type="text" class="form-control" id="subject" name="Subject">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Message">Message</label>
+                                    <textarea class="form-control" id="message" rows="3" name="Message"></textarea>
+                                </div>
+                                <input type="submit" class="btn btn-lg btn-success btn-block" value="Send Message" />
+                            </form>
+                            <center><p><a href="@Url.Action("Index","Home")">To Dashboard</a></p></center>
+                        </div>
+                    </div>
+                </div><! --/col-lg-8 -->
+            </div><! --/row -->
+        </div><! --/container -->
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/Scripts/metisMenu.min.js"></script>
+    <!-- Morris Charts JavaScript -->
+    <script src="~/Scripts/raphael-min.js"></script>
+    <script src="~/Scripts/morris.min.js"></script>
+    <script src="~/Scripts/morris-data.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/Scripts/sb-admin-2.js"></script>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+
+<div class="col-lg-4">
+    <h4>New Users</h4>
+    <div class="hline"></div>
+    <p>
+        If you are a new user to this site, please, contact the administrtor to receive your permissions. You will receive confirmation within an hour. Thank you.
+    </p>
 </div>
+
+
+    -->

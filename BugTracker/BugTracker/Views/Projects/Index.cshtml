@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>/*Allows me to iterate over the collection of Projects that is being passed from the controller*/
 @{
-    ViewBag.Title = "Projects";//Viewbag.Title is a loosely typed variable with the value of "Projects"
+    ViewBag.Title = "Your Projects";//Viewbag.Title is a loosely typed variable with the value of "Projects"
 }
 @section css {
     <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
@@ -47,6 +47,7 @@
                                     <th>Project</th>
                                     <th>Created</th>
                                     <th>Updated</th>
+                                    <th>No. Of Tickets</th>
                                     <th>Assigned To</th>
                                     <th></th>
                                 </tr>
@@ -65,13 +66,34 @@
                                             @Html.DisplayFor(modelItem => item.Updated)
                                         </td>
                                         <td>
-                                            @foreach (var user in item.Users.ToList())
-                                            {
-                                                @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
-                                            }
+                                            <center>
+                                                @Html.DisplayFor(modelItem => item.Tickets.Count)
+                                            </center>
                                         </td>
                                         <td>
-                                            @if (User.IsInRole("Admin"))
+                                            @{
+                                                var usersArray = item.Users.ToArray();
+
+                                                for (int i = 0; i < usersArray.Length; i++)
+                                                {
+                                                    
+                                                    if (i < usersArray.Length - 1)
+                                                    {
+                                                        @usersArray[i].DisplayName<span>, </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        @usersArray[i].DisplayName<span></span>
+                                                    }
+                                                }
+                                            }
+                 @*                           @foreach (var user in item.Users.ToList())
+    {
+        @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
+    }*@
+                                        </td>
+                                        <td>
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
                                             {
                                                 @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
                                             @Html.ActionLink("Details", "Details", new { id = item.Id })
@@ -105,6 +127,8 @@ else
     <center>
         <h3>Currently you do not have permission to view projects.</h3>
         <h3>Contact the administrator to obtain access.</h3>
+        <br />
+        <a href="@Url.Action("Contact","Home")" class="btn btn-success">Contact Administrator</a>
     </center>
 }
     @section scripts {
@@ -120,7 +144,8 @@ else
         $(window).load(function () {
             $('#projectsTable').DataTable({
                 responsive: true,
-                stateSave: true
+                l: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
         })
     </script>

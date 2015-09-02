@@ -1,6 +1,7 @@
-﻿@{Layout = null;}
-@using BugTracker.Models
-@model LoginViewModel
+﻿
+@{
+    Layout = null;
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>BugTracker - Login</title>
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <!-- MetisMenu CSS -->
     <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
@@ -35,37 +36,12 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Please Sign In</h3>
+                        <h3 class="panel-title">Access Denied</h3>
                     </div>
                     <div class="panel-body">
-                        <!--<form role="form">-->
-                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "", role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <fieldset>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                    </label>
-                                </div>
-                                <!-- Change this to a button or input when using this as a form -->
-                                <input type="submit" class="btn btn-lg btn-success btn-block" value="Log In" />
-                            </fieldset>
-                        }
-                        <!--</form>-->
-                        <br />
-                        <div class="col-sm-8 col-lg-offset-3">
-                            @Html.ActionLink("Create New Account", "Register")
-                        </div>
-                        <div class="col-sm-8 col-lg-offset-3">
-                            @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                        </div>
+                        <h4 class="panel-body">You do not have permission to view the requested page.</h4>
+                        <h4 class="panel-body">If you are not logged in, please <a href="@Url.Action("Register","Account")">register</a> and/or <a href="@Url.Action("Login","Account")">login</a> now.</h4>
+                        <h4 class="panel-body">If you believe this message is not applicable to your circumstances, <br /> please <a href="@Url.Action("Contact","Home")">contact</a> the administrator <br />for further assistance.</h4>
                     </div>
                 </div>
             </div>

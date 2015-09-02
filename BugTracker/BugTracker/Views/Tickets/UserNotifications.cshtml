@@ -1,0 +1,103 @@
+﻿@model IEnumerable<BugTracker.Models.TicketNotification>
+@{
+    ViewBag.Title = "Notifications";
+}
+@section css {
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.responsive.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.alphabetSearch.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.jqueryui.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
+}
+<!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-table fa-fw"></i> Notifications
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive col-xs-12">
+                        <table class="table table-bordered table-hover table-striped" id="notifications">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Ticket
+                                    </th>
+                                    <th>
+                                        Message
+                                    </th>
+                                    <th>
+                                        Created
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Ticket.Title)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Message)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Created)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div id="morris-bar-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <center>
+        <h3>Currently you do not have permission to view notifications.</h3>
+        <h3>Contact the administrator to obtain access.</h3>
+        <br />
+        <a href="@Url.Action("Contact","Home")" class="btn btn-success">Contact Administrator</a>
+    </center>
+}
+@section scripts {
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.jqueryui.min.js"></script>
+    <script src="~/Scripts/dataTables.jPaginator.js"></script>
+    <script src="~/Scripts/dataTables.foundation.min.js"></script>
+    <script src="~/Scripts/dataTables.responsive.js"></script>
+    <script src="~/Scripts/dataTables.searchHighlight.min.js"></script>
+
+    <script>
+        $(window).load(function () {
+            $('#notifications').DataTable({
+                responsive: true,
+                stateSave: true,
+                autoWidth: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+        })
+    </script>
+    }

@@ -32,7 +32,7 @@
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <i class="fa fa-table fa-fw"></i> Tickets
+        <i class="fa fa-table fa-fw"></i> Users
     </div>
     <div class="panel-body">
         <div class="row">
@@ -50,7 +50,7 @@
                                 <th>
                                     Role(s)
                                 </th>
-                                <th></th>
+                                <!--<th></th>-->
                             </tr>
                         </thead>
                         <tbody id="userDisplayTable">
@@ -74,9 +74,9 @@
                                             @Model.Roles[role.RoleId]<span><br /></span>
                                         }
                                     </td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "EditUserRoles", new { user.Id })
-                                    </td>
+                                   @* <td>
+        @Html.ActionLink("Edit", "EditUserRoles", new { user.Id })
+    </td>*@
                                 </tr>
                             }
                         </tbody>
@@ -102,7 +102,8 @@
         $(window).load(function () {
             $('#adminUsersTable').DataTable({
                 responsive: true,
-                stateSave: true
+                l: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
         })
     </script>

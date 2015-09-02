@@ -11,6 +11,7 @@ namespace BugTracker.Models
     {
         public int Id { get; set; }
         public string Comment { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         public System.DateTimeOffset Created { get; set; }
         public int TicketId { get; set; }
         public string UserId { get; set; }

@@ -214,6 +214,10 @@ body {
     margin-top: 25%;
 }
 
+#contactAdmin {
+    margin-top: 5%;
+}
+
 .flot-chart {
     display: block;
     height: 400px;
@@ -379,4 +383,9 @@ table.dataTable thead .sorting:after {
 .attachment {
     max-height: 400px;
     max-width: 800px;
+}
+
+.description textarea {
+    min-height: 150px;
+    width: 100%;
 }

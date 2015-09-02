@@ -45,6 +45,23 @@ namespace BugTracker.Controllers
             //the 'string role' parameter of this method receives the parameter indicated in the button that was clicked. The parameter will
             //be either 'admin', 'project manager', 'developer' or 'submitter'.
         {
+            if (role == "Admin")
+            {
+                ViewBag.Title = "Manage Admin Role";
+            }
+            else if (role == "Project Manager")
+            {
+                ViewBag.Title = "Manage Project Manager Role";
+            }
+            else if (role == "Developer")
+            {
+                ViewBag.Title = "Manage Developer Role";
+            }
+            else
+            {
+                ViewBag.Title = "Manage Submitter Role";
+            }
+
             var helper = new UserRolesHelper();//this creates a new instance of the 'UserRolesHelper' class. the 'helper' object has
             //all of the methods defined in the 'UserRolesHelper' class.
             ViewBag.AssignedUsers = new MultiSelectList(db.Users.ToList(),"Id","DisplayName", helper.UsersInRole(role).Select(u => u.Id));

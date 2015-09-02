@@ -1,0 +1,148 @@
+﻿@using Microsoft.AspNet.Identity;
+@model IEnumerable<BugTracker.Models.Ticket>
+@{
+    ViewBag.Title = "All Tickets";
+}
+@section css {
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.responsive.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.alphabetSearch.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.jqueryui.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
+}
+<!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-table fa-fw"></i> Tickets
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive col-xs-12">
+                    <table class="table table-bordered table-hover table-striped" id="allTickets">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Project
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Title)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Created)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Updated)
+                                </th>
+                                <th>
+                                    Assigned To Ticket
+                                </th>
+                                <th>
+                                    Ticket Creator
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                ViewBag.Ticket = item;
+
+                                ViewBag.CanEdit = User.Identity.GetUserId() == item.AssignedToUserId || User.IsInRole("Admin") || (ViewBag.managedProjectIds.Contains(item.ProjectId));
+                                
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Type.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Updated)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
+                                    </td>
+                                    <td>
+                                        @if (ViewBag.CanEdit)
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
+                                        @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div id="morris-bar-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+else
+{
+<center>
+    <h3>Currently you do not have permission to view all tickets.</h3>
+    <h3>Contact the administrator to obtain access.</h3>
+    <br />
+    <a href="@Url.Action("Contact","Home")" class="btn btn-success">Contact Administrator</a>
+</center>
+}
+@section scripts {
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.jqueryui.min.js"></script>
+    <script src="~/Scripts/dataTables.jPaginator.js"></script>
+    <script src="~/Scripts/dataTables.foundation.min.js"></script>
+    <script src="~/Scripts/dataTables.responsive.js"></script>
+    <script src="~/Scripts/dataTables.searchHighlight.min.js"></script>
+
+    <script>
+        $(window).load(function () {
+            $('#allTickets').DataTable({
+                responsive: true,
+                stateSave: true,
+                autoWidth: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+        })
+    </script>
+}

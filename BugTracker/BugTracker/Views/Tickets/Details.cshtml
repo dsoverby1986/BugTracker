@@ -15,6 +15,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <i class="fa fa-list fa-fw"></i> @Html.DisplayFor(model => model.Title) <span class="separator-o">|</span>
+        <span><b>Creator: </b>@Html.DisplayFor(model => model.OwnerUser.DisplayName)</span><span class="separator-o"> |</span>
         <span><b>Created: </b>@Html.DisplayFor(model => model.Created)</span> <span class="separator-o">|</span>
         @if (Model.Updated != null)
         {
@@ -28,6 +29,12 @@
             <p>This ticket has been assigned to @Html.DisplayFor(model => model.AssignedToUser.DisplayName).</p>
         </div>
     }
+    else
+    {
+        <div class="panel-heading">
+            <p><b>This ticket has not yet been assigned.</b></p>
+        </div>
+    }
     <!-- /.panel-heading -->
     <div class="panel-body">
         <p>
@@ -39,12 +46,16 @@
     <p>
 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
 {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <span class="separator-r">|</span>}
-        @Html.ActionLink("Back to List", "Index")
+
+    if (ViewBag.CanEdit) { 
+    <a href="@Url.Action("Edit", "Tickets", new { id = Model.Id })" class="btn btn-warning">Edit</a>}
+    <a href="@Url.Action("Details", "Projects", new { id = Model.Project.Id })" class="btn btn-primary">Go To <b>@Model.Project.Name</b></a>
+    <a href="@Url.Action("Index", "Tickets", new { })" class="btn btn-primary">Go To Ticket List</a>
+}
     </p>
 <div class="row">
     <div class="col-xs-6">
-        @if (User.Identity.IsAuthenticated)
+        @if (ViewBag.CanCommentAndAttach)
         {
             //using (Html.BeginForm())
             //{
@@ -69,23 +80,26 @@
             {
                 <div class="row">
                     <div class="col-sm-12 panel-default">
-                        <div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px;">
-                            <p>
-                                <csmall><b>By: </b>@Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span class="separator-o"> |</span>
-                                <csmall><b>Date: </b> @Html.DisplayFor(modelItem => comment.Created)</csmall>
-                            </p>
-                            <div>
-                                @Html.DisplayFor(modelItem => comment.Comment)
+                        <!--<div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px; background-color:#ddd;">-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <p>
+                                    <csmall><b>By: </b>@Html.DisplayFor(modelItem => comment.User.DisplayName)</csmall><span class="separator-o"> |</span>
+                                    <csmall><b>Date: </b> @Html.DisplayFor(modelItem => comment.Created)</csmall>
+                                </p>
+                                <div>
+                                    @Html.DisplayFor(modelItem => comment.Comment)
+                                </div>
                             </div>
                         </div>
+                        <!--</div>-->
                     </div>
                 </div>
-                <br />
             }
         }
     </div>
     <div class="col-xs-6">
-    @if (User.Identity.IsAuthenticated)
+    @if (ViewBag.CanCommentAndAttach)
     {
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -109,52 +123,60 @@
         {
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px;">
-                        <p><b>Added On: </b>@attachment.Created</p>
-                        <p><b>Added By: </b>@attachment.User.DisplayName</p>
-                        <p><b>Description: </b>@attachment.Description</p>
-                        <p><img class="img-responsive attachment" src="@attachment.FileUrl" alt="" style="width:100%; margin-bottom:-10px;" /></p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--<div class="commentContainer" style="border: ridge 3px #ddd; border-radius:5px; background-color:#ddd;">-->
+                                <p><b>Added On: </b>@attachment.Created.ToString("MM/dd/yyyy hh:mm tt")</p>
+                                <p><b>Added By: </b>@attachment.User.DisplayName</p>
+                                <p><b>Description: </b>@attachment.Description</p>
+                                <p><img class="img-responsive attachment" src="@attachment.FileUrl" alt="" style="width:100%; margin-bottom:-10px;" /></p>
+                            <!--</div>-->
+                        </div>
                     </div>
                 </div>
             </div>
-            <br />
         }
     }
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <br />
 <br />
 @if (Model.Histories.Count > 0) { 
-    <h4><u>Edit History For This Ticket</u></h4>
+    <h4><u>Ticket History</u></h4>
     foreach (var history in Model.Histories)
     {
+        if (history.Property == "AssignedToUserId" || history.Property == "Description" || history.Property == "TicketTypeId" || history.Property == "TicketStatusId")
+        { 
         <div class="panel panel-default">
             <div class="panel-heading">
-                The @history.PropertyDisplay was changed from @(history.OldValueDisplay ?? "unset") to @(history.NewValueDisplay ?? "unset"), on @history.Changed
+                The <b>@history.PropertyDisplay</b> was <b>changed from</b> @(history.OldValueDisplay ?? "unset") <b>to</b> @(history.NewValueDisplay ?? "unset"), <b>on</b> @history.Changed.ToString("g")
             </div>
         </div>
+        }
+        else if (history.Property == "Comments")
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    A <b>@history.PropertyDisplay</b> was <b>added</b> by @(history.User.DisplayName ?? "a removed user"), <b>on</b> @history.Changed.ToString("g").
+                </div>
+            </div>
+        }
+        else if (history.Property == "Attachments")
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    An <b>@history.PropertyDisplay</b> was <b>added</b> by @(history.User.DisplayName ?? "a removed user"), <b>on</b> @history.Changed.ToString("g").
+                </div>
+            </div>
+        }
+        else if (history.Property == "Notifications")
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    A <b>@history.PropertyDisplay</b> was <b>sent</b> to @Model.AssignedToUser.DisplayName <b>on</b> @history.Changed.ToString("g").
+                </div>
+            </div>
+        }
     }
     <br />
     <br />

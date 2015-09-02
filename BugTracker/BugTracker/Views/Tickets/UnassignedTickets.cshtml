@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<BugTracker.Models.Ticket>
 @{
-    ViewBag.Title = "Your Projects' Tickets"; 
+    ViewBag.Title = "Unassigned Tickets";
 }
 @section css {
     <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
@@ -12,21 +12,18 @@
     <link href="~/Content/dataTables.foundation.css" rel="stylesheet" />
     <link href="~/Content/dataTables.searchHighlight.css" rel="stylesheet" />
 }
-@if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer") || User.IsInRole("Submitter"))
-{
-        <!------------------------------------------------------------------------------------------------------>
-    <div class="row">
-        <!-------------------------------------------------------------------------------------------------------->
-        <div class="col-lg-12">
-            <!---------------------------------------------------------------------------------------------->
-            <h3>@ViewBag.Title</h3>
-            <div class="page-header"></div>
-        </div>
-        <!-- /.col-lg-12 -->
+<!------------------------------------------------------------------------------------------------------>
+<div class="row">
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="col-lg-12">
+        <!---------------------------------------------------------------------------------------------->
+        <h3>@ViewBag.Title</h3>
+        <div class="page-header"></div>
     </div>
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
+    <!-- /.col-lg-12 -->
+</div>
+@if (User.Identity.IsAuthenticated)
+{
     <div class="panel panel-default">
         <div class="panel-heading">
             <i class="fa fa-table fa-fw"></i> Tickets
@@ -35,7 +32,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="table-responsive col-xs-12">
-                        <table class="table table-bordered table-hover table-striped" id="userTickets">
+                        <table class="table table-bordered table-hover table-striped" id="allTickets">
                             <thead>
                                 <tr>
                                     <th>
@@ -55,9 +52,6 @@
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Updated)
-                                    </th>
-                                    <th>
-                                        Assigned To Ticket
                                     </th>
                                     <th>
                                         Ticket Creator
@@ -88,9 +82,6 @@
                                             @Html.DisplayFor(modelItem => item.Updated)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
-                                        </td>
-                                        <td>
                                             @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
                                         </td>
                                         <td>
@@ -117,20 +108,9 @@
 }
 else
 {
-        <!------------------------------------------------------------------------------------------------------>
-    <div class="row">
-        <!-------------------------------------------------------------------------------------------------------->
-        <div class="col-lg-12">
-            <!---------------------------------------------------------------------------------------------->
-            <h3>@ViewBag.Title</h3>
-            <div class="page-header"></div>
-        </div>
-        <!-- /.col-lg-12 -->
-    </div>
-            <!-- /.row -->
     <center>
-        <h3>Currently you do not have permission to view tickets.</h3>
-        <h3>Contact the administrator to obtain access.</h3>
+        <h3>Currently you do not have permission to view unassigned tickets.</h3>
+        <h3>Contact the administrator for further information.</h3>
         <br />
         <a href="@Url.Action("Contact","Home")" class="btn btn-success">Contact Administrator</a>
     </center>
@@ -146,7 +126,7 @@ else
 
     <script>
         $(window).load(function () {
-            $('#userTickets').DataTable({
+            $('#allTickets').DataTable({
                 responsive: true,
                 stateSave: true,
                 autoWidth: true,

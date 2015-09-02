@@ -50,18 +50,50 @@ namespace BugTracker.Models
         // GET: Tickets/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            if(User.Identity.IsAuthenticated) 
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var ticket = db.Tickets.Find(id);
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                var ticket = db.Tickets.Find(id);
+
+                var project = db.Projects.FirstOrDefault(p => p.Id == ticket.ProjectId);
+
+                var userProject = user.Projects.FirstOrDefault(p => p.Id == project.Id);
+
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+                if (userProject != null)
+                {
+                    ViewBag.CanEdit = user.Id == ticket.AssignedToUserId || User.IsInRole("Admin") || ticket.ProjectId == userProject.Id;
+                }
+                else
+                {
+                    ViewBag.CanEdit = user.Id == ticket.AssignedToUserId || User.IsInRole("Admin");
+                }
+
+                if (userProject != null)
+                {
+                    ViewBag.CanCommentAndAttach = User.IsInRole("Admin") || (User.IsInRole("Project Manager") && project.Id == userProject.Id) || (User.IsInRole("Developer") && ticket.AssignedToUserId == user.Id) || (User.IsInRole("Submitter") && ticket.OwnerUserId == user.Id);
+                }
+                else
+                {
+                    ViewBag.CanCommentAndAttach = User.IsInRole("Admin") || (User.IsInRole("Developer") && ticket.AssignedToUserId == user.Id) || (User.IsInRole("Submitter") && ticket.OwnerUserId == user.Id);
+                }
+
                 //.Include(t => t.Comments);
-            //Ticket ticket = await db.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
+                //Ticket ticket = await db.Tickets.FindAsync(id);
+                if (ticket == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(ticket);
             }
-            return View(ticket);
+
+                return RedirectToAction("YouNeedToLogin","Home");
+
         }
 
         // GET: Tickets/Create
@@ -146,25 +178,86 @@ namespace BugTracker.Models
                 foreach (var item in histories)
                 {
                     db.TicketHistories.Add(item.History);
-                    if (item.Notification != null)
-                       await mailer.SendAsync(item.Notification);
+                   // if (item.Notification != null)
+                       //await mailer.SendAsync(item.Notification);
                 }
 
+                if (oldTicket.AssignedToUserId != ticket.AssignedToUserId)
+                {
+                    if (ticket.AssignedToUserId != null)
+                    {
+                        TicketNotification newUserNotification = new TicketNotification()
+                        {
+                            TicketId = ticket.Id,
+                            UserId = ticket.AssignedToUserId,
+                            Message = "You have been assigned to this ticket: " + ticket.Title + ".",
+                            Created = DateTimeOffset.Now
+                        };
+                        db.TicketNotifications.Add(newUserNotification);
+                    }
+
+                    if (oldTicket.AssignedToUserId != null)
+                    {
+                        TicketNotification oldUserNotification = new TicketNotification()
+                        {
+                            TicketId = ticket.Id,
+                            UserId = oldTicket.AssignedToUserId,
+                            Message = "You have been unassigned from this ticket: " + oldTicket.Title + ".",
+                            Created = DateTimeOffset.Now
+                        };
+                        db.TicketNotifications.Add(oldUserNotification);
+                    }
+                }
+
+                if(oldTicket.Title != ticket.Title)
+                {
+                    TicketNotification notification = new TicketNotification()
+                    {
+                        TicketId = ticket.Id,
+                        UserId = ticket.AssignedToUserId,
+                        Message = "A ticket you're assigned to has had a title change. The title was changed from '" + oldTicket.Title + "' to '" + ticket.Title + "'.",
+                        Created = DateTimeOffset.Now
+                    };
+                    db.TicketNotifications.Add(notification);
+                }
+
+                if(oldTicket.Description != ticket.Description)
+                {
+                    TicketNotification notification = new TicketNotification()
+                    {
+                        TicketId = ticket.Id,
+                        UserId = ticket.AssignedToUserId,
+                        Message = "A ticket you're assigned to has had a description change. The description was changed from '" + oldTicket.Description + "' to '" + ticket.Description + "'.",
+                        Created = DateTimeOffset.Now
+                    };
+                    db.TicketNotifications.Add(notification);
+                }
+
+                if(oldTicket.TicketPriorityId != ticket.TicketPriorityId)
+                {
+                    TicketNotification notification = new TicketNotification()
+                    {
+                        TicketId = ticket.Id,
+                        UserId = ticket.AssignedToUserId,
+                        Message = "The priority of a ticket you're assigned to has changed. The ticket that changed is '" + ticket.Title + "'.",
+                        Created = DateTimeOffset.Now
+                    };
+                    db.TicketNotifications.Add(notification);
+                }
+
+                if(oldTicket.TicketStatusId != ticket.TicketStatusId)
+                {
+                    TicketNotification notification = new TicketNotification()
+                    {
+                        TicketId = ticket.Id,
+                        UserId = ticket.AssignedToUserId,
+                        Message = "The status of a ticket you're assigned to has changed. The ticket that changed is '" + ticket.Title + "'.",
+                        Created = DateTimeOffset.Now
+                    };
+                    db.TicketNotifications.Add(notification);
+                }
 
                 db.Update(ticket, editable.ToArray());
-                /*
-                if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
-                {
-                    db.Update<Ticket>(dbTicket, "Title", "Description", "Created", "Updated", "ProjectId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "OwnerUserId", "AssignedToUserId");
-                }
-                else{
-                    db.Update<Ticket>(dbTicket, "Title", "Description", "Created","Updated","ProjectId","TicketTypeId","TicketPriorityId","TicketStatusId","OwnerUserId");
-                }*/
-                //dbTicket.AssignedToUser.Clear();   //cannot call the .Clear() method on dsTicket.AssignedToUser for some reason
-                //dbTicket.AssignedToUser.Add(assignedUser);//cannot call the .Add() method on dbTicket.AssignedToUser for some reason
-                //i had to select 'generate method stub for both .Clear() and .Add()....what's up with that?
-
-                //db.Entry(ticket).State = EntityState.Modified;
                 
                 await db.SaveChangesAsync();
                 return RedirectToAction("Details", new { ticket.Id });
@@ -209,9 +302,67 @@ namespace BugTracker.Models
         {
             if (ModelState.IsValid)
             {
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                Ticket ticket = db.Tickets.Find(ticketId);
+
+                bool notificationChecker = false;
+
+                var commentHistory = new TicketHistory()
+                {
+                    TicketId = ticketId,
+                    Property = "Comments",
+                    PropertyDisplay = "Comment",
+                    OldValue = ticket.Comments.Count().ToString(),
+                    OldValueDisplay = ticket.Comments.Count().ToString(),
+                    NewValue = (ticket.Comments.Count() + 1).ToString(),
+                    NewValueDisplay = (ticket.Comments.Count() + 1).ToString(),
+                    Changed = DateTimeOffset.Now,
+                    UserId = user.DisplayName,
+                    Ticket = db.Tickets.Find(ticketId),
+                    User = user
+                };
+
+                var assignedUser = ticket.AssignedToUser;
+
+                var notification = assignedUser != null ? new IdentityMessage()
+                    {
+                        Subject = "A comment has been made on a ticket you're assigned to.",
+                        Destination = assignedUser.Email,
+                        Body = user.DisplayName + " left the following comment on your ticket titled '" + ticket.Title + "': <br /><br />" + ticketComment.Comment
+                    } : null;
+
+                if (notification != null) 
+                { 
+                    var mailer = new EmailService();
+                    mailer.SendAsync(notification);
+                    notificationChecker = true;
+                }
+                
                 ticketComment.UserId = User.Identity.GetUserId();
                 ticketComment.Created = DateTimeOffset.Now;
                 db.TicketComments.Add(ticketComment);
+                db.TicketHistories.Add(commentHistory);
+
+                if (notificationChecker)
+                {
+                    var notificationHistory = new TicketHistory()
+                    {
+                        TicketId = ticketId,
+                        Property = "Notifications",
+                        PropertyDisplay = "Notification",
+                        OldValue = ticket.Notifications.Count().ToString(),
+                        OldValueDisplay = ticket.Notifications.Count().ToString(),
+                        NewValue = (ticket.Notifications.Count() + 1).ToString(),
+                        NewValueDisplay = (ticket.Notifications.Count() + 1).ToString(),
+                        Changed = DateTimeOffset.Now,
+                        UserId = user.DisplayName,
+                        Ticket = db.Tickets.Find(ticketId),
+                        User = user
+                    };
+                    db.TicketHistories.Add(notificationHistory);
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = ticketId });
             }
@@ -242,13 +393,164 @@ namespace BugTracker.Models
                     file.SaveAs(Path.Combine(absPath, file.FileName));
                 }
 
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                Ticket ticket = db.Tickets.Find(ticketId);
+
+                bool notificationChecker = false;
+
+                var attachmentHistory = new TicketHistory()
+                {
+                    TicketId = ticketId,
+                    Property = "Attachments",
+                    PropertyDisplay = "Attachment",
+                    OldValue = ticket.Attachments.Count().ToString(),
+                    OldValueDisplay = ticket.Attachments.Count().ToString(),
+                    NewValue = (ticket.Attachments.Count() + 1).ToString(),
+                    NewValueDisplay = (ticket.Attachments.Count() + 1).ToString(),
+                    Changed = DateTimeOffset.Now,
+                    UserId = user.DisplayName,
+                    Ticket = db.Tickets.Find(ticketId),
+                    User = user
+                };
+
+                var assignedUser = ticket.AssignedToUser;
+
+                var notification = assignedUser != null ? new IdentityMessage()
+                {
+                    Subject = "An attachment has been added to a ticket that you're assigned to.",
+                    Destination = assignedUser.Email,
+                    Body = user.DisplayName + " has added an attachment to a ticket you're assigned to. The ticket title is '" + ticket.Title + "'.<br /><br />Following is informaton regarding the attachment:<br /><b>Created: </b>" + ticketAttachment.Created + "<br /><b>Description: </b>" + ticketAttachment.Description != null ? ticketAttachment.Description : null
+                } : null;
+
+                if (notification != null) 
+                { 
+                    var mailer = new EmailService();
+                    mailer.SendAsync(notification);
+                    notificationChecker = true;
+                }
+
                 ticketAttachment.UserId = User.Identity.GetUserId();
                 ticketAttachment.Created = DateTimeOffset.Now;
                 db.TicketAttachments.Add(ticketAttachment);
+                db.TicketHistories.Add(attachmentHistory);
+
+                if (notificationChecker)
+                {
+                    var notificationHistory = new TicketHistory()
+                    {
+                        TicketId = ticketId,
+                        Property = "Notifications",
+                        PropertyDisplay = "Notification",
+                        OldValue = ticket.Notifications.Count().ToString(),
+                        OldValueDisplay = ticket.Notifications.Count().ToString(),
+                        NewValue = (ticket.Notifications.Count() + 1).ToString(),
+                        NewValueDisplay = (ticket.Notifications.Count() + 1).ToString(),
+                        Changed = DateTimeOffset.Now,
+                        UserId = user.DisplayName,
+                        Ticket = db.Tickets.Find(ticketId),
+                        User = user
+                    };
+                    db.TicketHistories.Add(notificationHistory);
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = ticketId });
             }
             return View(ticketAttachment);
+        }
+
+        //GET: tickets/alltickets
+        public ActionResult AllTickets()
+        {
+            var userId = User.Identity.GetUserId();
+            var roleId = db.Roles.Single(x => x.Name == "Project Manager").Id;
+
+            if (User.IsInRole("Project Manager"))
+                ViewBag.managedProjectIds = new HashSet<int>(db.Users.Find(userId).Projects.Select(p => p.Id));
+            else
+
+                ViewBag.managedProjectIds = new HashSet<int>();
+                //new HashSet<int>(
+          
+                //from u in db.Users    
+                //where u.Roles.Any(r => r.RoleId == roleId) && u.Id == userId
+                //from p in u.Projects
+                //select p.Id);                      
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<Ticket> tickets;
+
+                tickets = db.Tickets;
+
+                ViewBag.user = db.Users.Find(User.Identity.GetUserId());
+
+                return View(tickets.ToList());
+            }
+
+            return View();
+        }
+
+        //GET: Tickets/TicketsYouAreAssignedTo
+        public ActionResult TicketsYouAreAssignedTo()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<Ticket> tickets;
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                tickets = db.Tickets.Where(t => t.AssignedToUserId == user.Id);
+
+                return View(tickets.ToList());
+            }
+
+            return View();
+        }
+
+        //GET: Tickets/TicketsYouHaveCreated
+        public ActionResult TicketsYouHaveCreated()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<Ticket> tickets;
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                tickets = db.Tickets.Where(t => t.OwnerUserId == user.Id);
+
+                return View(tickets.ToList());
+            }
+
+            return View();
+        }
+
+        //GET : Tickets/UnassignedTickets
+        public ActionResult UnassignedTickets()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<Ticket> tickets;
+                tickets = db.Tickets.Where(t => t.AssignedToUser == null);
+
+                return View(tickets.ToList());
+            }
+
+            return View();
+        }
+
+        //GET: Home/UserNotifications
+        public ActionResult UserNotifications()
+        {
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<TicketNotification> notifications;
+                notifications = db.TicketNotifications.Where(n => n.UserId == user.Id);
+
+                return View(notifications.ToList());
+            }
+            return View();
         }
 
         protected override void Dispose(bool disposing)

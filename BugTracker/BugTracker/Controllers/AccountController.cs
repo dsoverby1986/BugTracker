@@ -82,7 +82,8 @@ namespace BugTracker.Controllers
                     //string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
 
                     ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                    return View("Error");
+                    //return View("Error");
+                    return RedirectToAction("Index", "Home");
                 }
             }
 

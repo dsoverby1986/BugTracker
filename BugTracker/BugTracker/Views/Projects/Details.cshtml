@@ -64,7 +64,6 @@
     </div>
     <!-- /.panel-body -->
 </div>
-
 <div class="panel panel-default">
     <div class="panel-heading">
         <i class="fa fa-table fa-fw"></i> Tickets
@@ -103,6 +102,7 @@
     </div>
 </div>
 <a href="@Url.Action("Create", "Tickets", new { projectId = Model.Id })" class="btn btn-primary">Create Ticket</a>
+<br /><br />
 
 @section scripts {
     <script src="~/Scripts/jquery.dataTables.min.js"></script>
@@ -117,7 +117,8 @@
         $(window).load(function () {
             $('#pdTicketTable').DataTable({
                 responsive: true,
-                stateSave: true
+                stateSave: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
         })
     </script>
