@@ -224,14 +224,14 @@
                                                         @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
                                                     }
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center">
                                                     @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
                                                     {
-                                                        <a href="@Url.Action("Edit", "Projects", new { id = item.Id })">Edit</a><br />}
-                                                    <a href="@Url.Action("Details", "Projects", new { id = item.Id })">Details</a>
+                                                        <a href="@Url.Action("Edit", "Projects", new { id = item.Id })" title="Edit @item.Name"><i class="fa fa-pencil-square"></i></a><br />}
+                                                    <a href="@Url.Action("Details", "Projects", new { id = item.Id })" title="@item.Name Details"><i class="fa fa-info-circle"></i></a>
                                                     @if (User.IsInRole("Admin"))
                                                     {
-                                                        <br /><a href="@Url.Action("Delete","Projects",new { id = item.Id})">Delete</a>}
+                                                        <br /><a href="@Url.Action("Delete","Projects",new { id = item.Id})" title="Delete @item.Name"><i class="fa fa-trash-o"></i></a>}
                                                 </td>
                                             </tr>
                                         }
@@ -293,8 +293,8 @@
                                             <th>Title</th>
                                             <th>Created</th>
                                             <th>Updated</th>
-                                            <th>Assigned To Ticket</th>
-                                            <th>Ticket Creator</th>
+                                            <th>Assigned To</th>
+                                            <th>Creator</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -326,14 +326,14 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center">
                                                     @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                                                     {
-                                                        <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })">Edit</a><br />}
-                                                    <a href="@Url.Action("Details", "Tickets", new { id = item.Id })">Details</a>
+                                                        <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })" title="Edit @item.Title"><i class="fa fa-pencil-square"></i></a><br />}
+                                                    <a href="@Url.Action("Details", "Tickets", new { id = item.Id })" title="@item.Title Details"><i class="fa fa-info-circle"></i></a>
                                                     @if (User.IsInRole("Admin"))
                                                     {
-                                                        <br /><a href="@Url.Action("Delete", "Tickets", new { id = item.Id })">Delete</a> }
+                                                        <br /><a href="@Url.Action("Delete", "Tickets", new { id = item.Id })" title="Delete @item.Title"><i class="fa fa-trash-o"></i></a> }
                                                 </td>
                                             </tr>
                                         }

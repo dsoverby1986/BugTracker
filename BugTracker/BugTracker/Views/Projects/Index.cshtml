@@ -92,14 +92,16 @@
         @Html.DisplayFor(projectUser => user.DisplayName)<span><br /></span>
     }*@
                                         </td>
-                                        <td>
+                                        <td style="text-align:center;">
                                             @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
                                             {
-                                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
-                                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                                <a href="@Url.Action("Edit","Projects", new { id = item.Id })" title="Edit @item.Name"><i class="fa fa-pencil-square"></i></a><br />
+                                            }
+                                            <a href="@Url.Action("Details", "Projects", new { id = item.Id })" title="@item.Name Details"><i class="fa fa-info-circle"></i></a>
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                                                <br /><a href="@Url.Action("Delete", "Projects", new { id = item.Id })" title="Delete @item.Name"><i class="fa fa-trash-o"></i></a>
+                                            }
                                         </td>
                                     </tr>
                                 }

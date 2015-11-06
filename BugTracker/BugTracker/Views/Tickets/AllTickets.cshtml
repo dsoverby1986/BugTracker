@@ -55,10 +55,10 @@
                                     @Html.DisplayNameFor(model => model.Updated)
                                 </th>
                                 <th>
-                                    Assigned To Ticket
+                                    Assigned To
                                 </th>
                                 <th>
-                                    Ticket Creator
+                                    Creator
                                 </th>
                                 <th></th>
                             </tr>
@@ -98,11 +98,13 @@
                                     <td>
                                         @if (ViewBag.CanEdit)
                                         {
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
-                                        @Html.ActionLink("Details", "Details", new { id = item.Id })
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                                            <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })" title="Edit @item.Title"><i class="fa fa-pencil-square"></i></a><br />
+                                            <a href="@Url.Action("Details", "Tickets", new { id = item.Id })" title="@item.Title Details"><i class="fa fa-info-circle"></i></a>
+                                            if (User.IsInRole("Admin"))
+                                            {
+                                                <br /><a href="@Url.Action("Delete", "Tickets", new { id = item.Id })" title="Delete @item.Title"><i class="fa fa-trash-o"></i></a> 
+                                            }
+                                        }
                                     </td>
                                 </tr>
                             }

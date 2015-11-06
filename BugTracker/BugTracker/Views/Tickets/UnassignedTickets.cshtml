@@ -54,7 +54,7 @@
                                         @Html.DisplayNameFor(model => model.Updated)
                                     </th>
                                     <th>
-                                        Ticket Creator
+                                        Creator
                                     </th>
                                     <th></th>
                                 </tr>
@@ -84,14 +84,12 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
                                         </td>
-                                        <td>
+                                        <td style="text-align:center;">
                                             @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
-                                            {
-                                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<br />}
-                                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                            {<a href="@Url.Action("Edit", "Tickets", new { id = item.Id })" title="Edit @item.Title"><i class="fa fa-pencil-square"></i></a><br />}
+                                            <a href="@Url.Action("Details", "Tickets", new { id = item.Id })" title="@item.Title Details"><i class="fa fa-info-circle"></i></a>
                                             @if (User.IsInRole("Admin"))
-                                            {
-                                                <br />@Html.ActionLink("Delete", "Delete", new { id = item.Id }) }
+                                            {<br /><a href="@Url.Action("Delete", "Tickets", new { id = item.Id })" title="Delete @item.Title"><i class="fa fa-trash-o"></i></a>}
                                         </td>
                                     </tr>
                                 }
